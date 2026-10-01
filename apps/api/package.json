@@ -41,7 +41,7 @@
 	"dependencies": {
 		"@adonisjs/auth": "10.1.0",
 		"@adonisjs/bouncer": "4.0.1",
-		"@adonisjs/core": "7.5.0",
+		"@adonisjs/core": "7.5.2",
 		"@adonisjs/cors": "3.0.0",
 		"@adonisjs/drive": "^4.0.0",
 		"@adonisjs/limiter": "3.0.1",
@@ -50,8 +50,8 @@
 		"@adonisjs/queue": "0.6.2",
 		"@adonisjs/redis": "11.0.0",
 		"@adonisjs/session": "8.1.0",
-		"@aws-sdk/client-s3": "3.1135.0",
-		"@aws-sdk/s3-request-presigner": "3.1135.0",
+		"@aws-sdk/client-s3": "3.1141.0",
+		"@aws-sdk/s3-request-presigner": "3.1141.0",
 		"@sentry/node": "11.0.0",
 		"@tuyau/core": "1.2.2",
 		"@tuyau/superjson": "1.0.0",
@@ -64,7 +64,7 @@
 		"reflect-metadata": "0.2.2"
 	},
 	"devDependencies": {
-		"@adonisjs/assembler": "8.5.1",
+		"@adonisjs/assembler": "8.5.2",
 		"@adonisjs/tsconfig": "2.0.0",
 		"@japa/api-client": "^3.2.1",
 		"@japa/assert": "4.2.0",
