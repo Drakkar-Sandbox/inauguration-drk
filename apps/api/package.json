@@ -14,7 +14,7 @@
 		"worker": "node ace queue:work --queue=emails",
 		"test": "node ace test",
 		"typecheck": "tsc --noEmit",
-		"docker-compose": "docker compose up --remove-orphans"
+		"docker-compose": "docker compose up -d --remove-orphans"
 	},
 	"portless": {
 		"name": "api.e5",

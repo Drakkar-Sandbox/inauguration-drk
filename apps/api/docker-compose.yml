@@ -18,7 +18,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_DATABASE}_test
     ports:
-        - 5433:5432
+        - ${DB_PORT_TEST}:5432
     volumes:
       - postgresql-testing:/var/lib/postgresql/data
 
@@ -34,7 +34,7 @@ services:
   mailtrap:
     image: rnwood/smtp4dev:latest
     ports:
-      - "5001:80" # Web UI
+      - ${SMTP_WEB_PORT}:80 # Web UI
       - ${SMTP_PORT}:25 # SMTP
 
 volumes:

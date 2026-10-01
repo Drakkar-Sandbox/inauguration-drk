@@ -7,13 +7,13 @@
 			"outputs": ["build/**"]
 		},
 		"dev": {
+			"dependsOn": ["docker-compose"],
 			"cache": false,
 			"persistent": true,
-			"with": ["docker-compose", "worker"]
+			"with": ["worker"]
 		},
 		"docker-compose": {
-			"cache": false,
-			"persistent": true
+			"cache": false
 		},
 		"worker": {
 			"cache": false,
