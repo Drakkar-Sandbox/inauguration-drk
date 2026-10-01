@@ -17,23 +17,9 @@ updates:
     ignore:
       - dependency-name: "@types/node"
     groups:
-      deps-dev-minor:
-        dependency-type: "development"
-        exclude-patterns:
-          - "@biomejs/biome"
-        update-types:
-          - "minor"
-      deps-minor:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-      deps-dev-patch:
-        dependency-type: "development"
+      global-deps:
         exclude-patterns:
           - "@biomejs/biome"
         update-types:
           - "patch"
-      deps-patch:
-        dependency-type: "production"
-        update-types:
-          - "patch"
+          - "minor"
