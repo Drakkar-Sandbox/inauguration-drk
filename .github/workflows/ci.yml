@@ -69,9 +69,9 @@ jobs:
       - name: Run Type Check
         run: pnpm typecheck --affected
 
-  test:
+  unit-test:
     needs: [code-quality, type-check]
-    name: "🧪 Test"
+    name: "🧪 Unit Test"
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -139,7 +139,79 @@ jobs:
           pnpm adonis generate:key
 
       - name: Run Test
-        run: pnpm test --affected
+        run: pnpm test:unit --affected
+
+  e2e-test:
+    needs: [code-quality, type-check]
+    name: "🧪 e2e Test"
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: supersecret
+          POSTGRES_DB: app_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 3
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        env:
+          REDIS_PASSWORD: supersecret
+        options: >-
+          --health-cmd "redis-cli ping || exit 1"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Cache pnpm store & node_modules
+        uses: actions/cache@v6
+        with:
+          path: |
+            ${{ env.STORE_PATH }}
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup .env
+        run: |
+          cp apps/api/.env.example apps/api/.env
+          pnpm adonis generate:key
+
+      - name: Run Test
+        run: pnpm test:e2e --affected
 
   build:
     needs: [code-quality, type-check]
@@ -185,7 +257,7 @@ jobs:
 
   automerge:
     name: "🤖 Automerge Dependabot PR"
-    needs: [build, test]
+    needs: [build, unit-test, e2e-test]
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
 

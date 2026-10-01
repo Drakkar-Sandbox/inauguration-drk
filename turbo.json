@@ -10,6 +10,7 @@
 			"persistent": true
 		},
 		"typecheck": {},
-		"test": {}
+		"test:unit": {},
+		"test:e2e": {}
 	}
 }

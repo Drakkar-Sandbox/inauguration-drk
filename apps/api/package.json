@@ -13,6 +13,8 @@
 		"dev:app": "node ace serve --hmr",
 		"worker": "node ace queue:work --queue=emails",
 		"test": "node ace test",
+		"test:unit": "node ace test unit",
+		"test:e2e": "node ace test e2e",
 		"typecheck": "tsc --noEmit",
 		"docker-compose": "docker compose up -d --remove-orphans"
 	},
