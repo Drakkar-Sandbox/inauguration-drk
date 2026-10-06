@@ -1,4 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Caslon+Display&display=swap");
+@import "@fontsource-variable/urbanist";
+@import "@fontsource-variable/raleway";
+@import "@fontsource-variable/handjet";
 
 @import "tailwindcss";
 @import "@workspace/ui-theme/tailwind";

@@ -54,7 +54,7 @@ export function InvitationIntro(props: InvitationIntroProps) {
 
 			<div className="grid max-w-3xl justify-items-center gap-5">
 				<p {...rise(1)}>
-					<span className="font-bold text-primary-9 text-xs uppercase tracking-[0.28em]">
+					<span className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 						{t("intro.kicker", { name: guest.firstName })}
 					</span>
 				</p>
@@ -118,7 +118,7 @@ export function InvitationFarewell(props: InvitationFarewellProps) {
 		<div className="flex flex-1 flex-col items-center justify-center gap-10 py-10 text-center">
 			<div className="grid max-w-3xl justify-items-center gap-6">
 				<p {...rise(0)}>
-					<span className="font-bold text-primary-9 text-xs uppercase tracking-[0.28em]">
+					<span className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 						{declined
 							? t("farewell.kicker-declined")
 							: t("farewell.kicker", { name: guest.firstName })}
@@ -225,7 +225,7 @@ function StatusScreen(props: {
 		<div className="flex flex-1 flex-col items-center justify-center gap-8 py-10 text-center">
 			<div className="grid max-w-2xl justify-items-center gap-5">
 				<p {...rise(0)}>
-					<span className="font-bold text-primary-9 text-xs uppercase tracking-[0.28em]">
+					<span className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 						{kicker}
 					</span>
 				</p>

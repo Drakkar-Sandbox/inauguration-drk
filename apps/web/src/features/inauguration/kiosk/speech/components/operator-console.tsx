@@ -82,7 +82,7 @@ export function OperatorConsole() {
 			<header className="flex flex-wrap items-end justify-between gap-6">
 				<div className="grid gap-3">
 					<DrakkarLogo size="sm" tone="paper" />
-					<p className="font-bold text-primary-9 text-xs uppercase tracking-[0.24em]">
+					<p className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 						{t("kicker")}
 					</p>
 					<h1 className="font-extrabold text-4xl text-neutral-12 leading-none tracking-tight sm:text-5xl">

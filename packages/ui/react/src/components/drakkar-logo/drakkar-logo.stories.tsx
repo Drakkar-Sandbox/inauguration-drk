@@ -8,7 +8,6 @@ const meta: Meta<typeof DrakkarLogo> = {
 	args: {
 		size: "md",
 		tone: "ink",
-		accent: true,
 	},
 	argTypes: {
 		size: { control: "inline-radio", options: ["sm", "md", "lg", "xl"] },
@@ -26,7 +25,7 @@ export const OnInk: Story = {
 	decorators: [
 		(Story) => (
 			<div data-theme="dark" className="flex flex-col items-start gap-6 bg-neutral-1 p-16">
-				<span className="font-bold text-neutral-10 text-xs uppercase tracking-[0.24em]">
+				<span className="font-pixel text-base text-neutral-10 uppercase tracking-[0.12em]">
 					Inauguration · 3 décembre 2026
 				</span>
 				<Story />

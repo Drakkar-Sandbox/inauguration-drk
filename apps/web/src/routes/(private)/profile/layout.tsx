@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Tabs } from "@workspace/ui-react/components/tabs";
 import { FingerprintPatternIcon, ShieldIcon, UserIcon } from "@workspace/ui-react/icons";
 
+import { BrandTitle } from "#/components/app/brand-title";
+
 export const Route = createFileRoute("/(private)/profile")({
 	component: Layout,
 });
@@ -33,7 +35,7 @@ function Layout() {
 
 	return (
 		<main className="mx-auto grid max-w-5xl gap-8">
-			<h1 className="mb-4 font-serif text-5xl text-primary-11">{t("title")}</h1>
+			<BrandTitle className="mb-4">{t("title")}</BrandTitle>
 
 			<Tabs value={location.pathname}>
 				<Tabs.List>

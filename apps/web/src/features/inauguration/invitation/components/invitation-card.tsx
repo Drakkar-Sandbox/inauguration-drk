@@ -41,7 +41,7 @@ export function InvitationCard(props: InvitationCardProps) {
 			className={cn("flex flex-col gap-7", className)}
 		>
 			<header className="grid gap-3">
-				<p className="font-bold text-primary-9 text-xs uppercase tracking-[0.24em]">
+				<p className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 					{t("kicker")}
 				</p>
 				<h2
@@ -136,7 +136,9 @@ export function InvitationCard(props: InvitationCardProps) {
 					/>
 					<div className="grid gap-1">
 						<p className="font-bold text-neutral-12 text-sm">{t("qr.title")}</p>
-						<p className="text-neutral-10 text-xs leading-relaxed">{t("qr.description")}</p>
+						<p className="font-text text-neutral-10 text-xs leading-relaxed">
+							{t("qr.description")}
+						</p>
 					</div>
 				</div>
 			)}

@@ -2,13 +2,19 @@ interface Fonts {
 	[key: string]: string;
 }
 
+const SYSTEM_SANS =
+	'"ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
+
 /**
- * Drakkar brand typography: Helvetica Neue first, no web font download required.
+ * Drakkar brand typography (from drakkar.io), self-hosted via @fontsource-variable so kiosks work
+ * offline: Urbanist for headings/UI, Raleway for running text, Handjet for short pixel-style labels.
  */
 export const fonts: Fonts = {
-	sans: '"Helvetica Neue", "Helvetica", "Arial", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-	serif:
-		'"Libre Caslon Display", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"',
+	sans: `"Urbanist Variable", "Urbanist", ${SYSTEM_SANS}`,
+	text: `"Raleway Variable", "Raleway", ${SYSTEM_SANS}`,
+	pixel: `"Handjet Variable", "Handjet", "ui-monospace", ${SYSTEM_SANS}`,
+	/** Kept as an alias so legacy `font-serif` never renders a serif face. */
+	serif: `"Urbanist Variable", "Urbanist", ${SYSTEM_SANS}`,
 	mono: '"ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"',
 };
 

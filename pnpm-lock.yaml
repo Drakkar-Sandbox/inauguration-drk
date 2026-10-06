@@ -141,6 +141,15 @@ importers:
 
   apps/web:
     dependencies:
+      '@fontsource-variable/handjet':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/raleway':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/urbanist':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@sentry/tanstackstart-react':
         specifier: 11.2.0
         version: 11.2.0(@babel/core@7.29.7)(react@19.3.0)
@@ -281,6 +290,15 @@ importers:
       '@base-ui/react':
         specifier: 1.8.0
         version: 1.8.0(@date-fns/tz@1.4.1)(@types/react@19.3.0)(date-fns@4.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@fontsource-variable/handjet':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/raleway':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/urbanist':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@workspace/ui-theme':
         specifier: workspace:*
         version: link:../theme
@@ -1223,6 +1241,15 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fontsource-variable/handjet@5.3.0':
+    resolution: {integrity: sha512-IQEVbZpn7sPTBQENwJCWyzNxQ+Ac6fzPRKEvSJV87b76XeHNc9aM4qQTW3tj1TnWzCRK9I6PBui61nmTSV0nwQ==}
+
+  '@fontsource-variable/raleway@5.3.0':
+    resolution: {integrity: sha512-aSV2k+V6Zz+od0dHpBOzkVxEzmgEdiXcxDfant39jLOx+T89dielQRrZylukwK3Fp+FY255gPqz67ruOfs1rqA==}
+
+  '@fontsource-variable/urbanist@5.3.0':
+    resolution: {integrity: sha512-riHbcRgoOhEdCwVw3n3R1JLEwvRD1N9GlXtBcwl/UJ2KabfyDBuryE2Yq10308QJgbXw3F/IFF+VoMuuqwVfIA==}
 
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
@@ -7133,6 +7160,12 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@fontsource-variable/handjet@5.3.0': {}
+
+  '@fontsource-variable/raleway@5.3.0': {}
+
+  '@fontsource-variable/urbanist@5.3.0': {}
 
   '@humanwhocodes/retry@0.4.3': {}
 

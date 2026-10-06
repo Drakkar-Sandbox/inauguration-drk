@@ -64,7 +64,7 @@ export function InvitationForm(props: InvitationFormProps) {
 					<ArrowLeftIcon aria-hidden="true" />
 					{t("back", { name: event.avatarName })}
 				</button>
-				<p className="font-bold text-primary-9 text-xs uppercase tracking-[0.24em]">
+				<p className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 					{t("kicker")}
 				</p>
 				<h1 className="text-balance font-extrabold text-4xl text-neutral-12 leading-[0.95] tracking-tight sm:text-5xl">
@@ -77,7 +77,9 @@ export function InvitationForm(props: InvitationFormProps) {
 				title={t("consent.title")}
 				feedback={feedback?.section === "consent" ? feedback.message : null}
 			>
-				<p className="text-pretty text-neutral-11 text-sm leading-relaxed">{event.dataPolicy}</p>
+				<p className="text-pretty font-text text-neutral-11 text-sm leading-relaxed">
+					{event.dataPolicy}
+				</p>
 				<Options
 					label={t("consent.title")}
 					disabled={busy}
@@ -133,7 +135,7 @@ export function InvitationForm(props: InvitationFormProps) {
 				>
 					{plusOneEditable ? (
 						<>
-							<p className="text-neutral-11 text-sm">
+							<p className="font-text text-neutral-11 text-sm">
 								{t("plus-one.description", {
 									date: shortDateLabel(plusOneDeadline, event.timezone),
 								})}
@@ -171,7 +173,7 @@ export function InvitationForm(props: InvitationFormProps) {
 							/>
 						</>
 					) : (
-						<p className="text-neutral-11 text-sm">
+						<p className="font-text text-neutral-11 text-sm">
 							{plusOne
 								? t("plus-one.locked-with", { name: `${plusOne.firstName} ${plusOne.lastName}` })
 								: t("plus-one.locked")}

@@ -27,7 +27,7 @@ function Kpi(props: KpiProps) {
 
 	return (
 		<Card className={cn("grid gap-1 p-4", { "border-primary-7 bg-primary-2": highlight })}>
-			<p className="text-neutral-11 text-xs uppercase tracking-wide">{label}</p>
+			<p className="font-pixel text-neutral-11 text-sm uppercase tracking-[0.08em]">{label}</p>
 			<p
 				className={cn("font-bold text-3xl text-neutral-12 tabular-nums", {
 					"text-primary-11": highlight,

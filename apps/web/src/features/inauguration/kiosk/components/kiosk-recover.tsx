@@ -25,7 +25,7 @@ export function KioskRecover(props: ErrorComponentProps) {
 
 	return (
 		<KioskShell className="grid place-items-center">
-			<DrakkarLogo tone="paper" className="animate-halo text-[5vmin] motion-reduce:animate-none" />
+			<DrakkarLogo tone="paper" className="h-[6vmin] animate-halo motion-reduce:animate-none" />
 		</KioskShell>
 	);
 }

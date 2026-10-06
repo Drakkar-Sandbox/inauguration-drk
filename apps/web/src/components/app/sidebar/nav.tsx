@@ -55,7 +55,9 @@ export function SidebarNav() {
 
 	return (
 		<nav className="grid gap-0.5">
-			<p className="px-2 pb-1 text-neutral-10 text-xs uppercase tracking-wide">{t("section")}</p>
+			<p className="px-2 pb-1 font-pixel text-neutral-10 text-sm uppercase tracking-[0.1em]">
+				{t("section")}
+			</p>
 			{items.map((item) => (
 				<Link
 					key={item.to}
@@ -77,7 +79,7 @@ export function SidebarNav() {
 				</Link>
 			))}
 
-			<p className="px-2 pt-5 pb-1 text-neutral-10 text-xs uppercase tracking-wide">
+			<p className="px-2 pt-5 pb-1 font-pixel text-neutral-10 text-sm uppercase tracking-[0.1em]">
 				{t("screens.section")}
 			</p>
 			{SCREENS.map((screen) => (

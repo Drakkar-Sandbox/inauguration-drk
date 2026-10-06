@@ -1,2 +1,6 @@
+@import "@fontsource-variable/urbanist";
+@import "@fontsource-variable/raleway";
+@import "@fontsource-variable/handjet";
+
 @import "tailwindcss";
 @import "@workspace/ui-theme/tailwind";

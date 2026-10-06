@@ -59,7 +59,7 @@ export function CheckinDrawer(props: CheckinDrawerProps) {
 				<DialogHeadless.Popup className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xl flex-col gap-6 border-neutral-6 border-l bg-neutral-2 p-8 text-neutral-12 transition duration-300 data-ending-style:translate-x-full data-starting-style:translate-x-full">
 					<header className="flex items-start justify-between gap-4">
 						<div className="grid gap-2">
-							<p className="font-bold text-primary-9 text-xs uppercase tracking-[0.24em]">
+							<p className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 								{t("kicker")}
 							</p>
 							<DialogHeadless.Title className="font-extrabold text-3xl tracking-tight">

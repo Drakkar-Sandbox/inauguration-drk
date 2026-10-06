@@ -37,7 +37,7 @@ export function GuestIdentityForm(props: GuestIdentityFormProps) {
 			<Card.Header className="flex items-center justify-between gap-4">
 				<div className="grid gap-0.5">
 					<h2 className="font-semibold text-md text-neutral-12">{t("title")}</h2>
-					<p className="text-neutral-11 text-xs">{t("description")}</p>
+					<p className="font-text text-neutral-11 text-xs">{t("description")}</p>
 				</div>
 
 				<form.AppForm>

@@ -20,7 +20,7 @@ Theme token package where `src/tokens.ts` is the editable source of truth and `s
 - Add/edit theme values in `src/tokens.ts`, then regenerate CSS.
 - Use `pnpm --filter @workspace/ui-theme dev` while editing tokens for watch regeneration.
 - Color token shape is `{ [scale]: { [step]: { light, dark } } }`.
-- Fonts are string tokens under `fonts`.
+- Fonts are string tokens under `fonts`: `sans` = Urbanist (headings/UI), `text` = Raleway (running text), `pixel` = Handjet (short uppercase labels only); `serif` aliases Urbanist. Font files are self-hosted via `@fontsource-variable/*` imports in each app's globals.css.
 - Motion tokens live under `animations` (`{ value, keyframes }`) and generate `--animate-<name>` + `@keyframes` (`animate-breathe`, `animate-halo`, `animate-ripple`, `animate-orbit`, `animate-rise`).
 - Generated CSS defines `@theme inline`, resets `--color-*`, emits light `:root`, dark `[data-theme="dark"]`, and reduced-motion rules.
 - Consumers import `@workspace/ui-theme/tailwind` for CSS and `@workspace/ui-theme/tokens` for token data.

@@ -36,7 +36,7 @@ export function GuestQrCard(props: GuestQrCardProps) {
 		<Card>
 			<Card.Header className="grid gap-0.5">
 				<h2 className="font-semibold text-md text-neutral-12">{t("title")}</h2>
-				<p className="text-neutral-11 text-xs">{t("description")}</p>
+				<p className="font-text text-neutral-11 text-xs">{t("description")}</p>
 			</Card.Header>
 			<Card.Content className="grid gap-4">
 				<div className="mx-auto aspect-square w-full max-w-56 rounded-lg border border-neutral-6 bg-white p-2">

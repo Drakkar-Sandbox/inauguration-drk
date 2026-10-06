@@ -4,8 +4,10 @@
  */
 
 @theme inline {
-	--font-sans: "Helvetica Neue", "Helvetica", "Arial", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--font-serif: "Libre Caslon Display", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif";
+	--font-sans: "Urbanist Variable", "Urbanist", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-text: "Raleway Variable", "Raleway", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-pixel: "Handjet Variable", "Handjet", "ui-monospace", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-serif: "Urbanist Variable", "Urbanist", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--font-mono: "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace";
 
 	--animate-breathe: breathe 7s ease-in-out infinite;

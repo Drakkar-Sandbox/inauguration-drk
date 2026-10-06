@@ -42,7 +42,8 @@ export function wordsFromCharacterAlignment(alignment: CharacterAlignment): Leif
 const leifSubtitlesVariants = tv({
 	slots: {
 		root: "flex max-w-4xl flex-col gap-3",
-		speaker: "font-bold text-primary-9 text-xs uppercase tracking-[0.24em]",
+		speaker:
+			"font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]",
 		line: "text-balance font-bold text-neutral-12 tracking-tight",
 		word: "transition-colors duration-150",
 		srOnly: "sr-only",

@@ -12,7 +12,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 		meta: [
 			{ charSet: "utf-8" },
 			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "E.5 Stack" },
+			{ title: "Drakkar — Inauguration" },
 		],
 		links: [
 			{ rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },

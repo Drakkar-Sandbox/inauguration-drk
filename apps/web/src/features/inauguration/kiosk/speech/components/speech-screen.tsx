@@ -49,8 +49,7 @@ export function SpeechScreen() {
 
 			<DrakkarLogo
 				tone="paper"
-				accent
-				className="absolute bottom-[3vh] left-[3vw] text-[1.8vmin] opacity-40"
+				className="absolute bottom-[3vh] left-[3vw] h-[2.4vmin] opacity-40"
 			/>
 		</div>
 	);

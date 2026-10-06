@@ -34,7 +34,7 @@ export function UpdatePasswordForm(props: UpdatePasswordFormProps) {
 			<Card.Header className="flex items-center justify-between">
 				<div className="grid gap-0.5">
 					<h2 className="font-semibold text-md text-neutral-12">{t("title")}</h2>
-					<p className="text-neutral-11 text-xs">{t("description")}</p>
+					<p className="font-text text-neutral-11 text-xs">{t("description")}</p>
 				</div>
 
 				<form.AppForm>

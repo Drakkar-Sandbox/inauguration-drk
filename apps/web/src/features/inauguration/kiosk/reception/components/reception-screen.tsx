@@ -43,8 +43,8 @@ export function ReceptionScreen() {
 			<AudioUnlockGate />
 
 			<header className="relative z-10 flex items-center justify-between px-[5vmin] pt-[5vmin]">
-				<DrakkarLogo tone="paper" className="text-[3.2vmin]" />
-				<p className="font-bold text-[1.5vmin] text-neutral-10 uppercase tracking-[0.3em]">
+				<DrakkarLogo tone="paper" className="h-[4vmin]" />
+				<p className="font-pixel text-[2.2vmin] text-neutral-10 uppercase leading-none tracking-[0.12em]">
 					{t("kicker")}
 				</p>
 			</header>
@@ -146,7 +146,7 @@ function Welcome(props: WelcomeProps) {
 
 	return (
 		<div className="grid gap-[2vmin]">
-			<p className="animate-rise font-bold text-[2.2vmin] text-primary-9 uppercase tracking-[0.3em] motion-reduce:animate-none">
+			<p className="animate-rise font-pixel font-semibold text-[3vmin] text-primary-9 uppercase leading-none tracking-[0.12em] motion-reduce:animate-none">
 				{kicker}
 			</p>
 			{pending ? (

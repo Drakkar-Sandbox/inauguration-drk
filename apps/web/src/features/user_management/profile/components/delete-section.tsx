@@ -11,7 +11,7 @@ export function DeleteProfileSection() {
 		<div className="flex items-center justify-between">
 			<div className="grid gap-0.5">
 				<h3 className="font-semibold text-neutral-12 text-sm">{t("title")}</h3>
-				<p className="text-neutral-11 text-xs">{t("description")}</p>
+				<p className="font-text text-neutral-11 text-xs">{t("description")}</p>
 			</div>
 
 			<DeleteProfileConfirmationDialog

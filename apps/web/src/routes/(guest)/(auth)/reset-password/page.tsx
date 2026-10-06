@@ -5,6 +5,7 @@ import z from "zod";
 
 import { toast } from "@workspace/ui-react/components/toast";
 
+import { BrandTitle } from "#/components/app/brand-title";
 import { ResetPasswordForm } from "#/features/user_management/password/components/reset-form";
 
 const searchParamsSchema = z.object({
@@ -39,7 +40,7 @@ function Page() {
 
 	return (
 		<>
-			<h1 className="mb-9 font-serif text-5xl text-primary-11">{t("title")}</h1>
+			<BrandTitle className="mb-8">{t("title")}</BrandTitle>
 
 			<ResetPasswordForm token={token} />
 		</>

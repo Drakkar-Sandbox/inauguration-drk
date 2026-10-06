@@ -1,0 +1,8 @@
+{
+	"routes.(guest).(auth).layout": {
+		"kicker": "Espace équipe",
+		"headline": "L'inauguration, côté coulisses",
+		"description": "Invités, écrans du jour J et passations : tout se pilote d'ici.",
+		"footer": "drakkar.io"
+	}
+}

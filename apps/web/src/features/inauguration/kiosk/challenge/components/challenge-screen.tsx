@@ -51,7 +51,7 @@ export function ChallengeScreen() {
 			<AudioUnlockGate />
 
 			<header className="relative z-10 flex items-center justify-between gap-6 px-[5vmin] pt-[4.5vmin]">
-				<DrakkarLogo tone="paper" className="text-[3vmin]" />
+				<DrakkarLogo tone="paper" className="h-[3.8vmin]" />
 				{phase === "session" && session ? (
 					<div className="flex items-center gap-4">
 						<p className="rounded-full border border-neutral-6 bg-neutral-2/70 px-5 py-2.5 font-semibold text-[1.8vmin] text-neutral-11 backdrop-blur-md">
@@ -69,7 +69,7 @@ export function ChallengeScreen() {
 						</button>
 					</div>
 				) : (
-					<p className="font-bold text-[1.5vmin] text-neutral-10 uppercase tracking-[0.3em]">
+					<p className="font-pixel text-[2.2vmin] text-neutral-10 uppercase leading-none tracking-[0.12em]">
 						{t("kicker")}
 					</p>
 				)}
@@ -150,7 +150,7 @@ function PhaseContent(props: PhaseContentProps) {
 		return (
 			<div key="idle" className="grid gap-[4vmin] portrait:justify-items-center">
 				<div className="grid gap-[2.5vmin]">
-					<p className="animate-rise font-bold text-[2.2vmin] text-primary-9 uppercase tracking-[0.32em] motion-reduce:animate-none">
+					<p className="animate-rise font-pixel font-semibold text-[3vmin] text-primary-9 uppercase leading-none tracking-[0.12em] motion-reduce:animate-none">
 						{t("attract.kicker", { name })}
 					</p>
 					<h1 className="animate-rise text-balance font-extrabold text-[min(10vmin,8.5rem)] text-neutral-12 leading-[0.88] tracking-[-0.05em] [animation-delay:100ms] motion-reduce:animate-none">
@@ -170,7 +170,7 @@ function PhaseContent(props: PhaseContentProps) {
 							/>
 						)}
 					</ScanFrame>
-					<p className="max-w-[48vmin] text-pretty text-[2.6vmin] text-neutral-11 leading-snug">
+					<p className="max-w-[48vmin] text-pretty font-text text-[2.6vmin] text-neutral-11 leading-snug">
 						{phase === "starting" ? t("attract.starting", { name }) : t("attract.scan")}
 					</p>
 				</div>
@@ -181,7 +181,7 @@ function PhaseContent(props: PhaseContentProps) {
 	if (phase === "thanks") {
 		return (
 			<div key="thanks" className="grid gap-[3vmin]">
-				<p className="animate-rise font-bold text-[2.2vmin] text-primary-9 uppercase tracking-[0.32em] motion-reduce:animate-none">
+				<p className="animate-rise font-pixel font-semibold text-[3vmin] text-primary-9 uppercase leading-none tracking-[0.12em] motion-reduce:animate-none">
 					{t("thanks.kicker")}
 				</p>
 				<h1 className="animate-rise font-extrabold text-[min(14vmin,11rem)] text-neutral-12 leading-[0.86] tracking-[-0.055em] [animation-delay:100ms] motion-reduce:animate-none">
@@ -200,7 +200,7 @@ function PhaseContent(props: PhaseContentProps) {
 	if (phase === "resting") {
 		return (
 			<div key="resting" className="grid gap-[3vmin]">
-				<p className="animate-rise font-bold text-[2.2vmin] text-neutral-10 uppercase tracking-[0.32em] motion-reduce:animate-none">
+				<p className="animate-rise font-pixel font-semibold text-[3vmin] text-neutral-10 uppercase leading-none tracking-[0.12em] motion-reduce:animate-none">
 					{t("resting.kicker")}
 				</p>
 				<h1 className="animate-rise text-balance font-extrabold text-[min(9vmin,7.5rem)] text-neutral-12 leading-[0.9] tracking-[-0.05em] [animation-delay:100ms] motion-reduce:animate-none">

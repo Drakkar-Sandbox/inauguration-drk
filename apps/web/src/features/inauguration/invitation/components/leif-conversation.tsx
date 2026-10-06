@@ -117,7 +117,7 @@ export function LeifConversation(props: LeifConversationProps) {
 								)}
 							/>
 						) : (
-							<p className="font-bold text-primary-9 text-xs uppercase tracking-[0.24em]">
+							<p className="font-pixel font-semibold text-base text-primary-9 uppercase leading-none tracking-[0.12em]">
 								{avatarName}
 							</p>
 						)}

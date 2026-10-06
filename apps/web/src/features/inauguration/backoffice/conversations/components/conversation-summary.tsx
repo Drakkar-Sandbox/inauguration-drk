@@ -27,14 +27,18 @@ export function ConversationSummary(props: ConversationSummaryProps) {
 	return (
 		<dl className="grid gap-3">
 			<div className="grid gap-1">
-				<dt className="text-neutral-11 text-xs uppercase tracking-wide">{t("interest")}</dt>
+				<dt className="font-pixel text-neutral-11 text-sm uppercase tracking-[0.08em]">
+					{t("interest")}
+				</dt>
 				<dd>
 					<InterestBadge level={summary.interestLevel} />
 				</dd>
 			</div>
 			{rows.map((row) => (
 				<div key={row.label} className="grid gap-1">
-					<dt className="text-neutral-11 text-xs uppercase tracking-wide">{row.label}</dt>
+					<dt className="font-pixel text-neutral-11 text-sm uppercase tracking-[0.08em]">
+						{row.label}
+					</dt>
 					<dd className="whitespace-pre-line text-neutral-12 text-sm">{row.value ?? "—"}</dd>
 				</div>
 			))}
