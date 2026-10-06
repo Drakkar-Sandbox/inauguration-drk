@@ -2,7 +2,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { colors, fonts } from "../src/tokens.ts";
+import { animations, colors, fonts } from "../src/tokens.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = path.join(__dirname, "../src/tailwind.css");
@@ -35,6 +35,17 @@ function validateTokens() {
 		}
 	}
 
+	for (const [animationName, animation] of Object.entries(animations)) {
+		if (typeof animation?.value !== "string" || typeof animation.keyframes !== "object") {
+			fail(`Invalid animation token ${animationName}: expected value string and keyframes object`);
+		}
+		for (const [selector, declarations] of Object.entries(animation.keyframes)) {
+			if (typeof declarations !== "string") {
+				fail(`Invalid animation token ${animationName} ${selector}: expected string`);
+			}
+		}
+	}
+
 	for (const [color, variants] of Object.entries(colors)) {
 		for (const [variant, themes] of Object.entries(variants)) {
 			if (!themes || typeof themes.light !== "string" || typeof themes.dark !== "string") {
@@ -56,6 +67,24 @@ function buildCss() {
 
 	for (const [fontName, fontValue] of Object.entries(fonts)) {
 		lines.push(`\t--font-${fontName}: ${fontValue};`);
+	}
+
+	lines.push("");
+	for (const [animationName, animation] of Object.entries(animations)) {
+		lines.push(`\t--animate-${animationName}: ${animation.value};`);
+	}
+
+	for (const [animationName, animation] of Object.entries(animations)) {
+		lines.push("");
+		lines.push(`\t@keyframes ${animationName} {`);
+		for (const [selector, declarations] of Object.entries(animation.keyframes)) {
+			lines.push(`\t\t${selector} {`);
+			for (const declaration of declarations.split(";")) {
+				if (declaration.trim()) lines.push(`\t\t\t${declaration.trim()};`);
+			}
+			lines.push("\t\t}");
+		}
+		lines.push("\t}");
 	}
 
 	lines.push("");

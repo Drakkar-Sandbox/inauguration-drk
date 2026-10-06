@@ -13,7 +13,7 @@ components/<name>/
 └── index.ts
 ```
 
-Current components: alert-dialog, avatar, button, card, dialog, field, input, link, menu, password-input, scroll-area, sidebar, skeleton, spinner, switch, tabs, toast.
+Current components: alert-dialog, avatar, button, card, dialog, field, input, link, menu, password-input, scroll-area, sidebar, skeleton, spinner, switch, tabs, toast — plus the inauguration set: choice-chips, drakkar-logo, leif-avatar, leif-subtitles, push-to-talk-button (stories under `Leif/`, dark backgrounds).
 
 ## WHERE TO LOOK
 
@@ -40,3 +40,5 @@ Current components: alert-dialog, avatar, button, card, dialog, field, input, li
 - Do not bypass theme tokens with ad hoc CSS variables in component code.
 - Do not import `@base-ui/react/*` from consumers; expose intended primitives from the component barrel.
 - Do not move Storybook examples outside the component folder.
+- Do not use `var(--color-*)` in arbitrary values: the theme is `@theme inline`, so those resolve at `:root` and ignore nested `data-theme="dark"`. Use utilities (e.g. `text-primary-9` + `currentColor`).
+- Do not render Leif visuals outside `LeifAvatar`; plug new pipelines in through its `renderer` prop.

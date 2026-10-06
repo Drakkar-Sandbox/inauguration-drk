@@ -2,11 +2,64 @@ interface Fonts {
 	[key: string]: string;
 }
 
+/**
+ * Drakkar brand typography: Helvetica Neue first, no web font download required.
+ */
 export const fonts: Fonts = {
-	sans: '"Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+	sans: '"Helvetica Neue", "Helvetica", "Arial", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
 	serif:
 		'"Libre Caslon Display", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"',
 	mono: '"ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"',
+};
+
+interface Animations {
+	[key: string]: {
+		/** CSS `animation` shorthand, exposed as the `animate-<name>` utility. */
+		value: string;
+		/** Keyframe selectors (`from`, `50%`, …) mapped to their declarations. */
+		keyframes: { [selector: string]: string };
+	};
+}
+
+/**
+ * Motion tokens for the Leif experience. Kept slow and discreet: presence, never agitation.
+ * The generated reduced-motion rule neutralises them for users who ask for it.
+ */
+export const animations: Animations = {
+	breathe: {
+		value: "breathe 7s ease-in-out infinite",
+		keyframes: {
+			"0%, 100%": "transform: translateY(0) scale(1);",
+			"50%": "transform: translateY(-0.6%) scale(1.012);",
+		},
+	},
+	halo: {
+		value: "halo 5s ease-in-out infinite",
+		keyframes: {
+			"0%, 100%": "opacity: 0.45; transform: scale(0.98);",
+			"50%": "opacity: 0.8; transform: scale(1.03);",
+		},
+	},
+	ripple: {
+		value: "ripple 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite",
+		keyframes: {
+			"0%": "opacity: 0.6; transform: scale(0.92);",
+			"100%": "opacity: 0; transform: scale(1.45);",
+		},
+	},
+	orbit: {
+		value: "orbit 2.8s linear infinite",
+		keyframes: {
+			to: "transform: rotate(360deg);",
+		},
+	},
+	rise: {
+		value: "rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both",
+		keyframes: {
+			from: "opacity: 0; transform: translateY(0.5rem);",
+			to: "opacity: 1; transform: translateY(0);",
+		},
+	},
 };
 
 interface Colors {
@@ -19,33 +72,35 @@ interface Colors {
 }
 
 export const colors: Colors = {
+	/** Cool ink grays: paper white → #16181d ink (light), deep ink → paper (dark). */
 	neutral: {
-		1: { light: "#fdfcfd", dark: "#121113" },
-		2: { light: "#faf9fb", dark: "#1a191b" },
-		3: { light: "#f2eff3", dark: "#232225" },
-		4: { light: "#eae7ec", dark: "#2b292d" },
-		5: { light: "#e3dfe6", dark: "#323035" },
-		6: { light: "#dbd8e0", dark: "#3c393f" },
-		7: { light: "#d0cdd7", dark: "#49474e" },
-		8: { light: "#bcbac7", dark: "#625f69" },
-		9: { light: "#8e8c99", dark: "#6f6d78" },
-		10: { light: "#84828e", dark: "#7c7a85" },
-		11: { light: "#65636d", dark: "#b5b2bc" },
-		12: { light: "#211f26", dark: "#eeeef0" },
+		1: { light: "#ffffff", dark: "#0b0c0f" },
+		2: { light: "#f9f9fa", dark: "#101115" },
+		3: { light: "#f2f3f5", dark: "#16181d" },
+		4: { light: "#ecedf0", dark: "#1c1f25" },
+		5: { light: "#e6e7ea", dark: "#23262d" },
+		6: { light: "#dcdee2", dark: "#2b2f37" },
+		7: { light: "#cdd0d5", dark: "#363a43" },
+		8: { light: "#b4b8bf", dark: "#4a4f59" },
+		9: { light: "#8a909b", dark: "#6b717c" },
+		10: { light: "#7d838e", dark: "#8a909b" },
+		11: { light: "#4a4f59", dark: "#b4b8bf" },
+		12: { light: "#16181d", dark: "#f2f3f5" },
 	},
+	/** Drakkar coral, built around #FF4A48 (step 9). */
 	primary: {
-		1: { light: "#fdfcfe", dark: "#14121f" },
-		2: { light: "#faf8ff", dark: "#1b1525" },
-		3: { light: "#f4f0fe", dark: "#291f43" },
-		4: { light: "#ebe4ff", dark: "#33255b" },
-		5: { light: "#e1d9ff", dark: "#3c2e69" },
-		6: { light: "#d4cafe", dark: "#473876" },
-		7: { light: "#c2b5f5", dark: "#56468b" },
-		8: { light: "#aa99ec", dark: "#6958ad" },
-		9: { light: "#6e56cf", dark: "#6e56cf" },
-		10: { light: "#654dc4", dark: "#7d66d9" },
-		11: { light: "#6550b9", dark: "#baa7ff" },
-		12: { light: "#2f265f", dark: "#e2ddfe" },
+		1: { light: "#fffcfc", dark: "#150e0f" },
+		2: { light: "#fff7f6", dark: "#1d1112" },
+		3: { light: "#ffeceb", dark: "#351315" },
+		4: { light: "#ffdcdb", dark: "#4a1316" },
+		5: { light: "#ffcdcb", dark: "#5a191b" },
+		6: { light: "#ffbab8", dark: "#6c2324" },
+		7: { light: "#fca2a0", dark: "#883130" },
+		8: { light: "#f68381", dark: "#b54140" },
+		9: { light: "#ff4a48", dark: "#ff4a48" },
+		10: { light: "#f03c3b", dark: "#ff615e" },
+		11: { light: "#d42a2a", dark: "#ff9a96" },
+		12: { light: "#5e1a1a", dark: "#ffd8d5" },
 	},
 	info: {
 		1: { light: "#fbfdff", dark: "#0d1520" },

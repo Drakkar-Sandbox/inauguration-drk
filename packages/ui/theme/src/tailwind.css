@@ -4,9 +4,63 @@
  */
 
 @theme inline {
-	--font-sans: "Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-sans: "Helvetica Neue", "Helvetica", "Arial", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--font-serif: "Libre Caslon Display", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif";
 	--font-mono: "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace";
+
+	--animate-breathe: breathe 7s ease-in-out infinite;
+	--animate-halo: halo 5s ease-in-out infinite;
+	--animate-ripple: ripple 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+	--animate-orbit: orbit 2.8s linear infinite;
+	--animate-rise: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+	@keyframes breathe {
+		0%, 100% {
+			transform: translateY(0) scale(1);
+		}
+		50% {
+			transform: translateY(-0.6%) scale(1.012);
+		}
+	}
+
+	@keyframes halo {
+		0%, 100% {
+			opacity: 0.45;
+			transform: scale(0.98);
+		}
+		50% {
+			opacity: 0.8;
+			transform: scale(1.03);
+		}
+	}
+
+	@keyframes ripple {
+		0% {
+			opacity: 0.6;
+			transform: scale(0.92);
+		}
+		100% {
+			opacity: 0;
+			transform: scale(1.45);
+		}
+	}
+
+	@keyframes orbit {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes rise {
+		from {
+			opacity: 0;
+			transform: translateY(0.5rem);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
 
 	--color-*: initial;
 
@@ -506,31 +560,31 @@
 
 :root {
 
-	--neutral-1: #fdfcfd;
-	--neutral-2: #faf9fb;
-	--neutral-3: #f2eff3;
-	--neutral-4: #eae7ec;
-	--neutral-5: #e3dfe6;
-	--neutral-6: #dbd8e0;
-	--neutral-7: #d0cdd7;
-	--neutral-8: #bcbac7;
-	--neutral-9: #8e8c99;
-	--neutral-10: #84828e;
-	--neutral-11: #65636d;
-	--neutral-12: #211f26;
+	--neutral-1: #ffffff;
+	--neutral-2: #f9f9fa;
+	--neutral-3: #f2f3f5;
+	--neutral-4: #ecedf0;
+	--neutral-5: #e6e7ea;
+	--neutral-6: #dcdee2;
+	--neutral-7: #cdd0d5;
+	--neutral-8: #b4b8bf;
+	--neutral-9: #8a909b;
+	--neutral-10: #7d838e;
+	--neutral-11: #4a4f59;
+	--neutral-12: #16181d;
 
-	--primary-1: #fdfcfe;
-	--primary-2: #faf8ff;
-	--primary-3: #f4f0fe;
-	--primary-4: #ebe4ff;
-	--primary-5: #e1d9ff;
-	--primary-6: #d4cafe;
-	--primary-7: #c2b5f5;
-	--primary-8: #aa99ec;
-	--primary-9: #6e56cf;
-	--primary-10: #654dc4;
-	--primary-11: #6550b9;
-	--primary-12: #2f265f;
+	--primary-1: #fffcfc;
+	--primary-2: #fff7f6;
+	--primary-3: #ffeceb;
+	--primary-4: #ffdcdb;
+	--primary-5: #ffcdcb;
+	--primary-6: #ffbab8;
+	--primary-7: #fca2a0;
+	--primary-8: #f68381;
+	--primary-9: #ff4a48;
+	--primary-10: #f03c3b;
+	--primary-11: #d42a2a;
+	--primary-12: #5e1a1a;
 
 	--info-1: #fbfdff;
 	--info-2: #f4faff;
@@ -990,31 +1044,31 @@
 
 [data-theme="dark"] {
 
-	--neutral-1: #121113;
-	--neutral-2: #1a191b;
-	--neutral-3: #232225;
-	--neutral-4: #2b292d;
-	--neutral-5: #323035;
-	--neutral-6: #3c393f;
-	--neutral-7: #49474e;
-	--neutral-8: #625f69;
-	--neutral-9: #6f6d78;
-	--neutral-10: #7c7a85;
-	--neutral-11: #b5b2bc;
-	--neutral-12: #eeeef0;
+	--neutral-1: #0b0c0f;
+	--neutral-2: #101115;
+	--neutral-3: #16181d;
+	--neutral-4: #1c1f25;
+	--neutral-5: #23262d;
+	--neutral-6: #2b2f37;
+	--neutral-7: #363a43;
+	--neutral-8: #4a4f59;
+	--neutral-9: #6b717c;
+	--neutral-10: #8a909b;
+	--neutral-11: #b4b8bf;
+	--neutral-12: #f2f3f5;
 
-	--primary-1: #14121f;
-	--primary-2: #1b1525;
-	--primary-3: #291f43;
-	--primary-4: #33255b;
-	--primary-5: #3c2e69;
-	--primary-6: #473876;
-	--primary-7: #56468b;
-	--primary-8: #6958ad;
-	--primary-9: #6e56cf;
-	--primary-10: #7d66d9;
-	--primary-11: #baa7ff;
-	--primary-12: #e2ddfe;
+	--primary-1: #150e0f;
+	--primary-2: #1d1112;
+	--primary-3: #351315;
+	--primary-4: #4a1316;
+	--primary-5: #5a191b;
+	--primary-6: #6c2324;
+	--primary-7: #883130;
+	--primary-8: #b54140;
+	--primary-9: #ff4a48;
+	--primary-10: #ff615e;
+	--primary-11: #ff9a96;
+	--primary-12: #ffd8d5;
 
 	--info-1: #0d1520;
 	--info-2: #111927;
