@@ -1,20 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { api } from "#/libs/tuyau";
-
 /**
- * Staff land on the back-office, kiosk devices on the reception screen (the private layout
- * already sends anonymous visitors to the login page).
+ * Staff land on the back-office. Anonymous visitors and kiosk accounts are redirected by the
+ * private layout (login page, screen picker).
  */
 export const Route = createFileRoute("/(private)/(home)/")({
-	beforeLoad: async ({ context }) => {
-		const user = await context.queryClient.ensureQueryData(
-			api.accountManagement.profile.view.queryOptions(),
-		);
-
-		throw redirect({
-			to: user?.role === "kiosk" ? "/screens/accueil" : "/backoffice",
-			replace: true,
-		});
+	beforeLoad: () => {
+		throw redirect({ to: "/backoffice", replace: true });
 	},
 });

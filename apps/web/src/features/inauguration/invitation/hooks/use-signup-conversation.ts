@@ -8,6 +8,7 @@ import { useLeifVoice } from "#/features/inauguration/leif/hooks/use-leif-voice"
 import { usePushToTalk } from "#/features/inauguration/leif/hooks/use-push-to-talk";
 import type { SignupTurn } from "#/features/inauguration/leif/types";
 import {
+	errorCode,
 	errorStatus,
 	synthesizeSpeech,
 	transcribeSpeech,
@@ -58,15 +59,18 @@ export function useSignupConversation(params: UseSignupConversationParams) {
 				const next = await sendMessage({ params: { token }, body: input });
 				setTurn(next);
 				setInvitation(next.invitation);
-				await voice.speak(next.reply.text);
+				// Only `spoken` may be voiced for guests; `text` (shown) can echo what they typed.
+				await voice.speak(next.reply.text, { voicedText: next.reply.spoken });
 			} catch (error) {
 				const status = errorStatus(error);
 				const apology =
-					status === 429
-						? t("apology.busy")
-						: status === 422
-							? t("apology.invalid")
-							: t("apology.generic");
+					errorCode(error) === "E_LEIF_TURN_LIMIT"
+						? t("apology.turn-limit")
+						: status === 429
+							? t("apology.busy")
+							: status === 422
+								? t("apology.invalid")
+								: t("apology.generic");
 				await voice.speak(apology, { speech: null });
 			}
 		},

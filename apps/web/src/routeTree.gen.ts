@@ -13,6 +13,7 @@ import { Route as kioskLayoutRouteImport } from './routes/(kiosk)/layout'
 import { Route as privateLayoutRouteImport } from './routes/(private)/layout'
 import { Route as guestauthLayoutRouteImport } from './routes/(guest)/(auth)/layout'
 import { Route as privateProfileLayoutRouteImport } from './routes/(private)/profile/layout'
+import { Route as kioskScreensPageRouteImport } from './routes/(kiosk)/screens/page'
 import { Route as privatehomePageRouteImport } from './routes/(private)/(home)/page'
 import { Route as privateBackofficePageRouteImport } from './routes/(private)/backoffice/page'
 import { Route as privateProfilePageRouteImport } from './routes/(private)/profile/page'
@@ -49,6 +50,11 @@ const privateProfileLayoutRoute = privateProfileLayoutRouteImport.update({
   id: '/profile',
   path: '/profile',
   getParentRoute: () => privateLayoutRoute,
+} as any)
+const kioskScreensPageRoute = kioskScreensPageRouteImport.update({
+  id: '/screens/',
+  path: '/screens/',
+  getParentRoute: () => kioskLayoutRoute,
 } as any)
 const privatehomePageRoute = privatehomePageRouteImport.update({
   id: '/(home)/',
@@ -160,6 +166,7 @@ const privateBackofficeGuestsGuestIdPageRoute =
 
 export interface FileRoutesByFullPath {
   '/profile': typeof privateProfileLayoutRouteWithChildren
+  '/screens/': typeof kioskScreensPageRoute
   '/': typeof privatehomePageRoute
   '/backoffice/': typeof privateBackofficePageRoute
   '/profile/': typeof privateProfilePageRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/backoffice/guests/$guestId/': typeof privateBackofficeGuestsGuestIdPageRoute
 }
 export interface FileRoutesByTo {
+  '/screens': typeof kioskScreensPageRoute
   '/': typeof privatehomePageRoute
   '/backoffice': typeof privateBackofficePageRoute
   '/profile': typeof privateProfilePageRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/(private)': typeof privateLayoutRouteWithChildren
   '/(guest)/(auth)': typeof guestauthLayoutRouteWithChildren
   '/(private)/profile': typeof privateProfileLayoutRouteWithChildren
+  '/(kiosk)/screens/': typeof kioskScreensPageRoute
   '/(private)/(home)/': typeof privatehomePageRoute
   '/(private)/backoffice/': typeof privateBackofficePageRoute
   '/(private)/profile/': typeof privateProfilePageRoute
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/profile'
+    | '/screens/'
     | '/'
     | '/backoffice/'
     | '/profile/'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/backoffice/guests/$guestId/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/screens'
     | '/'
     | '/backoffice'
     | '/profile'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/(private)'
     | '/(guest)/(auth)'
     | '/(private)/profile'
+    | '/(kiosk)/screens/'
     | '/(private)/(home)/'
     | '/(private)/backoffice/'
     | '/(private)/profile/'
@@ -334,6 +346,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile'
       preLoaderRoute: typeof privateProfileLayoutRouteImport
       parentRoute: typeof privateLayoutRoute
+    }
+    '/(kiosk)/screens/': {
+      id: '/(kiosk)/screens/'
+      path: '/screens'
+      fullPath: '/screens/'
+      preLoaderRoute: typeof kioskScreensPageRouteImport
+      parentRoute: typeof kioskLayoutRoute
     }
     '/(private)/(home)/': {
       id: '/(private)/(home)/'
@@ -472,6 +491,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface kioskLayoutRouteChildren {
+  kioskScreensPageRoute: typeof kioskScreensPageRoute
   kioskScreensAccueilPageRoute: typeof kioskScreensAccueilPageRoute
   kioskScreensBornePageRoute: typeof kioskScreensBornePageRoute
   kioskScreensDiscoursPageRoute: typeof kioskScreensDiscoursPageRoute
@@ -479,6 +499,7 @@ interface kioskLayoutRouteChildren {
 }
 
 const kioskLayoutRouteChildren: kioskLayoutRouteChildren = {
+  kioskScreensPageRoute: kioskScreensPageRoute,
   kioskScreensAccueilPageRoute: kioskScreensAccueilPageRoute,
   kioskScreensBornePageRoute: kioskScreensBornePageRoute,
   kioskScreensDiscoursPageRoute: kioskScreensDiscoursPageRoute,

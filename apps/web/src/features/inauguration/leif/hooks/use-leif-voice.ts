@@ -24,6 +24,11 @@ export type LeifLine = {
 type SpeakOptions = {
 	/** Already synthesized speech (kiosk greeting); `null` forces the text-only mode. */
 	speech?: SynthesizedSpeech | null;
+	/**
+	 * Text to synthesize when it differs from the displayed one (public signup: only the server's
+	 * `spoken` variant may be voiced). Subtitles then show the displayed text without word timing.
+	 */
+	voicedText?: string;
 };
 
 type UseLeifVoiceParams = {
@@ -82,9 +87,10 @@ export function useLeifVoice(params: UseLeifVoiceParams) {
 			let speech = options.speech;
 			if (speech === undefined && !mutedRef.current) {
 				setPreparing(true);
-				speech = await withTimeout(synthesizeRef.current(text), SYNTHESIS_TIMEOUT_MS).catch(
-					() => null,
-				);
+				speech = await withTimeout(
+					synthesizeRef.current(options.voicedText ?? text),
+					SYNTHESIS_TIMEOUT_MS,
+				).catch(() => null);
 				if (!isCurrent()) return;
 				setPreparing(false);
 			}
@@ -94,7 +100,9 @@ export function useLeifVoice(params: UseLeifVoiceParams) {
 
 			if (canPlay) {
 				try {
-					await playSpeech(context, speech as SynthesizedSpeech, text, current);
+					await playSpeech(context, speech as SynthesizedSpeech, text, current, {
+						karaoke: (options.voicedText ?? text) === text,
+					});
 					return;
 				} catch {
 					if (!isCurrent()) return;
@@ -110,6 +118,7 @@ export function useLeifVoice(params: UseLeifVoiceParams) {
 		speech: SynthesizedSpeech,
 		text: string,
 		current: number,
+		{ karaoke }: { karaoke: boolean },
 	) {
 		const buffer = await context.decodeAudioData(decodeBase64(speech.audioBase64));
 		if (generation.current !== current) return;
@@ -123,7 +132,7 @@ export function useLeifVoice(params: UseLeifVoiceParams) {
 		analyser.connect(context.destination);
 
 		const samples = new Float32Array(analyser.fftSize);
-		const words = wordsFromSpeech(speech);
+		const words = karaoke ? wordsFromSpeech(speech) : [];
 
 		await new Promise<void>((resolve) => {
 			let frame = 0;

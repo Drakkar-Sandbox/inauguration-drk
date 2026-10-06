@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 import { Sidebar } from "#/components/app/sidebar";
-import { isAuthenticated } from "#/utils/auth";
+import { isAuthenticated, isKioskAccount } from "#/utils/auth";
 
 export const Route = createFileRoute("/(private)")({
 	beforeLoad: async ({ context, location }) => {
@@ -12,6 +12,10 @@ export const Route = createFileRoute("/(private)")({
 					redirectTo: location.pathname,
 				},
 			});
+		}
+		// Kiosk devices never load the back-office shell (its data is admin-only).
+		if (isKioskAccount(context.queryClient)) {
+			throw redirect({ to: "/screens", replace: true });
 		}
 	},
 	component: Layout,

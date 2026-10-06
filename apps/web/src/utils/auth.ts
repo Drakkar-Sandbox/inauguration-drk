@@ -14,3 +14,11 @@ export async function isAuthenticated(queryClient: QueryClient) {
 		return false;
 	}
 }
+
+/**
+ * Role of the signed-in account (read from the profile cache filled by `isAuthenticated`).
+ * Kiosk accounts only reach the day-J screens, never the back-office.
+ */
+export function isKioskAccount(queryClient: QueryClient) {
+	return queryClient.getQueryData(api.accountManagement.profile.view.queryKey())?.role === "kiosk";
+}

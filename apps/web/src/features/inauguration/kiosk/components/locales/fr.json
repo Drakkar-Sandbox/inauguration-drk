@@ -18,5 +18,29 @@
 			"confirmed": "Confirmé",
 			"declined": "A décliné"
 		}
+	},
+
+	"features.inauguration.kiosk.components.screen-picker": {
+		"kicker": "Jour J",
+		"title": "Choisir l'écran",
+		"logout": "Se déconnecter",
+		"screens": {
+			"accueil": {
+				"title": "Accueil",
+				"description": "Écran vertical de l'entrée : scan des invitations et bienvenue personnalisée."
+			},
+			"borne": {
+				"title": "Défiez {{name}}",
+				"description": "Borne de conversation : une idée IA en 60 secondes, puis passation au référent."
+			},
+			"discours": {
+				"title": "Discours",
+				"description": "Écran de scène : {{name}} dit les répliques déclenchées depuis la console."
+			},
+			"operateur": {
+				"title": "Console opérateur",
+				"description": "Déclenche les répliques du discours (touches 1 à 9, 0 pour le silence)."
+			}
+		}
 	}
 }

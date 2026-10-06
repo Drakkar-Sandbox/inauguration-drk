@@ -8,7 +8,7 @@ import { PlusOneForm } from "#/features/inauguration/invitation/components/plus-
 import { useInvitationMutations } from "#/features/inauguration/invitation/hooks/use-invitation-mutations";
 import { shortDateLabel } from "#/features/inauguration/invitation/utils/format";
 import type { Invitation } from "#/features/inauguration/leif/types";
-import { errorStatus } from "#/features/inauguration/leif/utils/api";
+import { errorCode, errorStatus } from "#/features/inauguration/leif/utils/api";
 
 type InvitationFormProps = {
 	token: string;
@@ -38,11 +38,13 @@ export function InvitationForm(props: InvitationFormProps) {
 			setFeedback({
 				section,
 				message:
-					status === 403
-						? t("error.closed")
-						: status === 422
-							? t("error.invalid")
-							: t("error.generic"),
+					errorCode(error) === "E_PLUS_ONE_CHANGE_LIMIT"
+						? t("error.change-limit")
+						: status === 403
+							? t("error.closed")
+							: status === 422
+								? t("error.invalid")
+								: t("error.generic"),
 			});
 		}
 	};

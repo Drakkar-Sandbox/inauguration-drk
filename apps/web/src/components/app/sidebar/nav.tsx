@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next";
 
 import {
 	BellRingIcon,
+	ExternalLinkIcon,
 	LayoutDashboardIcon,
 	MessagesSquareIcon,
+	MonitorIcon,
 	QrCodeIcon,
 	UsersIcon,
 } from "@workspace/ui-react/icons";
@@ -24,6 +26,14 @@ type NavItem = {
 	exact?: boolean;
 	badge?: number;
 };
+
+/** Day-J screens open in their own tab (full screen, no app chrome). */
+const SCREENS = [
+	{ to: "/screens/accueil", key: "accueil" },
+	{ to: "/screens/borne", key: "borne" },
+	{ to: "/screens/discours", key: "discours" },
+	{ to: "/screens/operateur", key: "operateur" },
+] as const;
 
 export function SidebarNav() {
 	const { t } = useTranslation("components.app.sidebar.nav");
@@ -65,6 +75,23 @@ export function SidebarNav() {
 						</span>
 					)}
 				</Link>
+			))}
+
+			<p className="px-2 pt-5 pb-1 text-neutral-10 text-xs uppercase tracking-wide">
+				{t("screens.section")}
+			</p>
+			{SCREENS.map((screen) => (
+				<a
+					key={screen.to}
+					href={screen.to}
+					target="_blank"
+					rel="noreferrer"
+					className="flex h-9 items-center gap-3 rounded-lg px-2 text-neutral-11 text-sm outline-none ring-neutral-7 transition hover:bg-neutral-3 hover:text-neutral-12 focus-visible:ring-3 [&_svg]:size-4"
+				>
+					<MonitorIcon />
+					<span className="flex-1">{t(`screens.${screen.key}`)}</span>
+					<ExternalLinkIcon aria-label={t("screens.new-tab")} className="text-neutral-9" />
+				</a>
 			))}
 		</nav>
 	);

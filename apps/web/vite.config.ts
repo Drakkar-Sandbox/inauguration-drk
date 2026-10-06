@@ -13,7 +13,10 @@ const config = defineConfig({
 		port: Number(process.env.PORT) ?? undefined,
 	},
 	plugins: [
-		devtools(),
+		devtools({
+			// Piping echoes server logs into the browser console and back: one warning loops forever.
+			consolePiping: { enabled: false },
+		}),
 		tailwindcss(),
 		tanstackStart({
 			spa: {

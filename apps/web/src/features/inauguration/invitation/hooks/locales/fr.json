@@ -2,6 +2,7 @@
 	"features.inauguration.invitation.hooks.conversation": {
 		"apology": {
 			"generic": "Pardonnez-moi, la liaison est un peu capricieuse ce soir. Pourriez-vous répéter ?",
+			"turn-limit": "Nous avons beaucoup échangé aujourd'hui. Pour la suite, le formulaire de réponse reste à votre disposition.",
 			"busy": "Vous allez plus vite que mon ombre. Accordez-moi un instant, puis reprenons.",
 			"invalid": "Je crains de ne pas avoir saisi. Pourriez-vous reformuler, ou choisir une réponse ci-dessous ?",
 			"not-heard": "Je n'ai rien entendu. Maintenez le bouton pendant que vous parlez, ou écrivez-moi."

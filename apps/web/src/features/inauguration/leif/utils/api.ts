@@ -51,3 +51,10 @@ export function invitationFileUrl(
 export function errorStatus(error: unknown) {
 	return error instanceof TuyauError ? (error.status ?? null) : null;
 }
+
+/** API error code (`E_…`) of a failed Tuyau call, if any. */
+export function errorCode(error: unknown) {
+	const code =
+		error instanceof TuyauError ? (error.response as { code?: unknown } | undefined)?.code : null;
+	return typeof code === "string" ? code : null;
+}

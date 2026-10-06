@@ -88,7 +88,8 @@
 		"error": {
 			"generic": "Cela n'a pas fonctionné. Réessayez dans un instant.",
 			"invalid": "Certaines informations ne sont pas valides.",
-			"closed": "Cette modification n'est plus possible."
+			"closed": "Cette modification n'est plus possible.",
+			"change-limit": "Vous avez atteint le nombre de modifications possibles. L'équipe Drakkar reste joignable pour tout changement."
 		}
 	},
 
