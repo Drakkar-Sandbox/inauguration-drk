@@ -1,14 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(private)/(home)/")({ component: Home });
+import { api } from "#/libs/tuyau";
 
-function Home() {
-	return (
-		<div>
-			<h1 className="font-bold text-4xl">Welcome to TanStack Start</h1>
-			<p className="mt-4 text-lg">
-				Edit <code>src/routes/index.tsx</code> to get started.
-			</p>
-		</div>
-	);
-}
+/**
+ * Staff land on the back-office, kiosk devices on the reception screen (the private layout
+ * already sends anonymous visitors to the login page).
+ */
+export const Route = createFileRoute("/(private)/(home)/")({
+	beforeLoad: async ({ context }) => {
+		const user = await context.queryClient.ensureQueryData(
+			api.accountManagement.profile.view.queryOptions(),
+		);
+
+		throw redirect({
+			to: user?.role === "kiosk" ? "/screens/accueil" : "/backoffice",
+			replace: true,
+		});
+	},
+});

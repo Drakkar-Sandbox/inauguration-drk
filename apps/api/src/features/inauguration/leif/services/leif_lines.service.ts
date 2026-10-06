@@ -164,13 +164,13 @@ export default class LeifLinesService {
 	}
 
 	kioskHandoffOffer(referentFirstName: string | null) {
-		const who = referentFirstName ?? "un membre de l'équipe";
+		const who = referentFirstName ?? "Un membre de l'équipe";
 
 		return `${who} connaît très bien ces sujets et serait ravi d'en parler avec vous. Voulez-vous que je vous mette en relation ?`;
 	}
 
 	kioskHandoffDone(referentFirstName: string | null) {
-		const who = referentFirstName ?? "Un membre de l'équipe";
+		const who = referentFirstName ?? "un membre de l'équipe";
 
 		return `C'est transmis : ${who} vous rejoint très vite. Merci pour ce bel échange !`;
 	}

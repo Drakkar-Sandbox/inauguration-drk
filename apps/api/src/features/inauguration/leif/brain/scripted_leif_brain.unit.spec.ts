@@ -46,4 +46,24 @@ test.group("Features / Inauguration / Leif / Brain / Scripted", () => {
 		assert.equal(result.faqIndex, index);
 		assert.equal(result.answer, eventConfig.faq[index].answer);
 	});
+
+	test("it should start the handoff offer with a capital letter without referent", async ({
+		assert,
+	}) => {
+		const reply = await brain.kioskReply({
+			event: eventConfig,
+			guest: { firstName: "Ada", company: null },
+			angleTopic: null,
+			angleNotes: null,
+			referentFirstName: null,
+			handoffRequested: false,
+			transcript: [
+				{ role: "guest", text: "Je fais de la logistique.", at: "" },
+				{ role: "guest", text: "Intéressant !", at: "" },
+			],
+		});
+
+		assert.isTrue(reply.offerHandoff);
+		assert.isTrue(reply.text.startsWith("Un membre de l'équipe"));
+	});
 });

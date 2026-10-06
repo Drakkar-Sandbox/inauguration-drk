@@ -1,0 +1,22 @@
+{
+	"features.inauguration.kiosk.reception.components.reception-screen": {
+		"kicker": "Inauguration",
+		"attract": {
+			"title": "Scannez votre invitation",
+			"line-1": "Présentez le QR code de votre carton ou de votre email devant l'écran.",
+			"line-2": "Pas de QR code sous la main ? Un hôte vous accueille avec plaisir.",
+			"line-3": "Bienvenue dans les nouveaux bureaux Drakkar."
+		},
+		"welcome": {
+			"kicker": "Bienvenue",
+			"returning": "Re-bonjour",
+			"generic": "Bienvenue chez Drakkar",
+			"generic-kicker": "Bonsoir",
+			"plus-one": "Avec {{name}}"
+		},
+		"camera": {
+			"on": "Activer la caméra",
+			"off": "Désactiver la caméra"
+		}
+	}
+}

@@ -1,0 +1,41 @@
+{
+	"features.inauguration.kiosk.challenge.components.challenge-screen": {
+		"kicker": "Borne IA",
+		"consent": "Aucun enregistrement audio n'est conservé. La trace écrite de l'échange n'est gardée qu'avec l'accord donné lors de votre inscription.",
+		"camera": {
+			"on": "Activer la caméra",
+			"off": "Désactiver la caméra"
+		},
+		"attract": {
+			"kicker": "Défiez {{name}}",
+			"title": "Parlez-lui de votre métier",
+			"promise": "{{name}} vous propose une idée IA en 60 secondes.",
+			"scan": "Scannez le QR code de votre invitation pour commencer.",
+			"starting": "Un instant, {{name}} arrive…"
+		},
+		"session": {
+			"end": "Terminer",
+			"you": "Vous",
+			"ptt": "Maintenez pour parler",
+			"listening": "Je vous écoute…",
+			"type": "Écrivez à {{name}}…",
+			"handoff": "Prévenir {{name}}",
+			"handoff-done": "{{name}} est prévenu",
+			"handoff-team": "Prévenir l'équipe Drakkar",
+			"handoff-done-team": "L'équipe est prévenue",
+			"inactive": "Toujours là ? Maintenez le bouton pour poursuivre."
+		},
+		"thanks": {
+			"kicker": "À bientôt",
+			"title": "Merci, {{name}}",
+			"description": "Belle soirée chez Drakkar.",
+			"handoff": "{{name}} vous rejoint très vite.",
+			"someone": "Un membre de l'équipe"
+		},
+		"resting": {
+			"kicker": "Une petite pause",
+			"title": "{{name}} se repose un instant.",
+			"description": "Un membre de l'équipe Drakkar prend le relais."
+		}
+	}
+}

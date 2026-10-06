@@ -1,0 +1,22 @@
+{
+	"features.inauguration.kiosk.components.audio-unlock-gate": {
+		"hint": "Touchez l'écran pour activer le son"
+	},
+
+	"features.inauguration.kiosk.components.checkin-drawer": {
+		"open": "Accueil manuel",
+		"kicker": "Accueil manuel",
+		"title": "Retrouver un invité",
+		"close": "Fermer",
+		"search": "Nom ou prénom…",
+		"empty": "Aucun invité ne correspond. Vérifiez l'orthographe.",
+		"plus-one-of": "Accompagne {{name}}",
+		"arrived": "Déjà arrivé",
+		"checkin": "Accueillir",
+		"status": {
+			"invited": "Sans réponse",
+			"confirmed": "Confirmé",
+			"declined": "A décliné"
+		}
+	}
+}

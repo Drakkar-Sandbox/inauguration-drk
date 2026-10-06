@@ -1,0 +1,134 @@
+{
+	"features.inauguration.invitation.components.invitation-card": {
+		"kicker": "Votre invitation",
+		"status": {
+			"invited": "En attente de votre réponse",
+			"confirmed": "Présence confirmée",
+			"declined": "Absence signalée",
+			"plus-one": "Vous accompagnez {{name}}"
+		},
+		"details": {
+			"when": "Quand",
+			"where": "Où",
+			"dress-code": "Tenue",
+			"plus-one": "Accompagnant"
+		},
+		"plus-one": {
+			"none": "Aucun accompagnant",
+			"editable-until": "Modifiable jusqu'au {{date}}",
+			"closed": "Les modifications sont closes"
+		},
+		"practical": {
+			"title": "Programme & accès",
+			"access": "Accès :",
+			"parking": "Parking :"
+		},
+		"qr": {
+			"alt": "QR code de votre invitation",
+			"title": "Votre accès",
+			"description": "Présentez ce QR code à l'accueil. Il vous attend aussi dans votre email de confirmation."
+		},
+		"calendar": "Ajouter à mon agenda",
+		"without-leif": "Répondre sans {{name}}"
+	},
+
+	"features.inauguration.invitation.components.plus-one-form": {
+		"first-name": "Prénom",
+		"last-name": "Nom",
+		"email": "Email",
+		"email-description": "Votre accompagnant recevra son invitation et son propre QR code."
+	},
+
+	"features.inauguration.invitation.components.leif-conversation": {
+		"you-said": "Vous avez dit :",
+		"choices": "Réponses suggérées",
+		"plus-one": {
+			"submit": "Envoyer"
+		},
+		"composer": {
+			"placeholder": "Écrire à {{name}}…",
+			"send": "Envoyer",
+			"use-voice": "Parler plutôt",
+			"use-keyboard": "Écrire plutôt"
+		},
+		"ptt": {
+			"idle": "Maintenez pour parler",
+			"processing": "Un instant…"
+		}
+	},
+
+	"features.inauguration.invitation.components.invitation-form": {
+		"back": "Revenir à {{name}}",
+		"kicker": "Répondre à l'invitation",
+		"title": "{{name}}, en quelques clics.",
+		"saved": "C'est enregistré.",
+		"consent": {
+			"title": "Vos données",
+			"yes": "J'accepte",
+			"no": "Je préfère que non"
+		},
+		"rsvp": {
+			"title": "Serez-vous des nôtres le {{date}} ?",
+			"yes": "Je serai présent",
+			"no": "Je ne pourrai pas venir",
+			"confirmed": "Parfait, nous vous attendons. Un email de confirmation est en route.",
+			"declined": "C'est noté. Vous nous manquerez."
+		},
+		"plus-one": {
+			"title": "Votre accompagnant",
+			"description": "Une personne peut vous accompagner. Vous pourrez la modifier jusqu'au {{date}}.",
+			"add": "Ajouter cet accompagnant",
+			"update": "Mettre à jour",
+			"remove": "Je viendrai seul",
+			"saved": "{{name}} recevra son invitation par email.",
+			"removed": "C'est noté, vous viendrez seul.",
+			"locked": "Il n'est plus possible d'ajouter un accompagnant.",
+			"locked-with": "{{name}} vous accompagne. Les modifications sont désormais closes."
+		},
+		"error": {
+			"generic": "Cela n'a pas fonctionné. Réessayez dans un instant.",
+			"invalid": "Certaines informations ne sont pas valides.",
+			"closed": "Cette modification n'est plus possible."
+		}
+	},
+
+	"features.inauguration.invitation.components.invitation-screens": {
+		"loading": "Chargement de votre invitation",
+		"intro": {
+			"kicker": "Invitation personnelle · {{name}}",
+			"title": "{{name}} vous attend",
+			"enter": "Entrer",
+			"sound-hint": "Pour l'expérience complète, activez le son.",
+			"enter-muted": "Entrer sans le son",
+			"without-leif": "Répondre sans {{name}}"
+		},
+		"farewell": {
+			"kicker": "Merci {{name}}",
+			"kicker-declined": "C'est noté",
+			"title": "À {{day}}",
+			"title-declined": "À bientôt, {{name}}",
+			"description": "Votre place est réservée. Votre QR code d'accès vous attend dans votre boîte mail.",
+			"description-plus-one": "Votre QR code d'accès vous attend dans votre boîte mail.",
+			"description-declined": "Vous nous manquerez. Si vos plans changent, votre invitation reste valable.",
+			"calendar": "Ajouter à mon agenda",
+			"continue": "Poser une question à {{name}}",
+			"edit": "Modifier ma réponse"
+		},
+		"not-found": {
+			"kicker": "Invitation",
+			"title": "Cette invitation est introuvable.",
+			"description": "Le lien est peut-être incomplet. Scannez à nouveau le QR code de votre carton d'invitation."
+		},
+		"unavailable": {
+			"kicker": "Un instant",
+			"title": "La liaison est capricieuse.",
+			"description": "Nous n'arrivons pas à charger votre invitation pour le moment. Vérifiez votre connexion, puis réessayez.",
+			"retry": "Réessayer"
+		}
+	},
+
+	"features.inauguration.invitation.components.invitation-experience": {
+		"my-invitation": "Mon invitation",
+		"close": "Fermer"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"features.inauguration.kiosk.speech.components.operator-console": {
+		"kicker": "Console opérateur",
+		"title": "Discours de {{name}}",
+		"open-screen": "Ouvrir l'écran discours",
+		"reset": "Silence",
+		"live": "En cours",
+		"trigger": "Déclencher",
+		"shortcuts": "Raccourcis : touches 1 à 9 pour déclencher une réplique, 0 pour faire taire l'écran.",
+		"status": {
+			"idle": "Écran au repos",
+			"live": "Dernière réplique : {{label}}",
+			"offline": "Connexion perdue — nouvelle tentative…",
+			"sequence": "Séquence n° {{sequence}}"
+		}
+	}
+}

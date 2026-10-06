@@ -162,7 +162,9 @@ export default class KioskLeifService {
 		const base = `Demande de mise en relation à la borne « Défiez ${eventConfig.avatarName} ».`;
 		if (!guest.consentGivenAt) return base;
 
-		const lastGuestMessage = session.transcript.findLast((entry) => entry.role === "guest");
+		const lastGuestMessage = [...session.transcript]
+			.reverse()
+			.find((entry) => entry.role === "guest");
 		return lastGuestMessage
 			? `${base} Dernier propos : « ${lastGuestMessage.text.slice(0, 280)} »`
 			: base;

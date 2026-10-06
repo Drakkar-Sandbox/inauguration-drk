@@ -1,0 +1,7 @@
+{
+	"features.inauguration.kiosk.reception.hooks.reception": {
+		"generic": "Bienvenue ! Toute l'équipe Drakkar est ravie de vous accueillir. Un membre de l'équipe vient à vous dans un instant.",
+		"fallback": "Bienvenue, {{name}} ! Toute l'équipe Drakkar est ravie de vous accueillir ce soir.",
+		"returning": "Re-bonjour, {{name}} ! Ravi de vous revoir parmi nous. Faites comme chez vous."
+	}
+}

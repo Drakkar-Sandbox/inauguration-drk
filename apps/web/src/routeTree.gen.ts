@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as kioskLayoutRouteImport } from './routes/(kiosk)/layout'
 import { Route as privateLayoutRouteImport } from './routes/(private)/layout'
 import { Route as guestauthLayoutRouteImport } from './routes/(guest)/(auth)/layout'
 import { Route as privateProfileLayoutRouteImport } from './routes/(private)/profile/layout'
@@ -18,15 +19,24 @@ import { Route as privateProfilePageRouteImport } from './routes/(private)/profi
 import { Route as guestauthForgotPasswordPageRouteImport } from './routes/(guest)/(auth)/forgot-password/page'
 import { Route as guestauthLoginPageRouteImport } from './routes/(guest)/(auth)/login/page'
 import { Route as guestauthResetPasswordPageRouteImport } from './routes/(guest)/(auth)/reset-password/page'
+import { Route as kioskScreensAccueilPageRouteImport } from './routes/(kiosk)/screens/accueil/page'
+import { Route as kioskScreensBornePageRouteImport } from './routes/(kiosk)/screens/borne/page'
+import { Route as kioskScreensDiscoursPageRouteImport } from './routes/(kiosk)/screens/discours/page'
+import { Route as kioskScreensOperateurPageRouteImport } from './routes/(kiosk)/screens/operateur/page'
 import { Route as privateBackofficeConversationsPageRouteImport } from './routes/(private)/backoffice/conversations/page'
 import { Route as privateBackofficeGuestsPageRouteImport } from './routes/(private)/backoffice/guests/page'
 import { Route as privateBackofficeHandoffsPageRouteImport } from './routes/(private)/backoffice/handoffs/page'
 import { Route as privateBackofficeQrSheetPageRouteImport } from './routes/(private)/backoffice/qr-sheet/page'
 import { Route as privateProfilePrivacyPageRouteImport } from './routes/(private)/profile/privacy/page'
 import { Route as privateProfileSecurityPageRouteImport } from './routes/(private)/profile/security/page'
+import { Route as publicITokenPageRouteImport } from './routes/(public)/i/$token/page'
 import { Route as privateBackofficeConversationsConversationIdPageRouteImport } from './routes/(private)/backoffice/conversations/$conversationId/page'
 import { Route as privateBackofficeGuestsGuestIdPageRouteImport } from './routes/(private)/backoffice/guests/$guestId/page'
 
+const kioskLayoutRoute = kioskLayoutRouteImport.update({
+  id: '/(kiosk)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const privateLayoutRoute = privateLayoutRouteImport.update({
   id: '/(private)',
   getParentRoute: () => rootRouteImport,
@@ -72,6 +82,28 @@ const guestauthResetPasswordPageRoute =
     path: '/reset-password/',
     getParentRoute: () => guestauthLayoutRoute,
   } as any)
+const kioskScreensAccueilPageRoute = kioskScreensAccueilPageRouteImport.update({
+  id: '/screens/accueil/',
+  path: '/screens/accueil/',
+  getParentRoute: () => kioskLayoutRoute,
+} as any)
+const kioskScreensBornePageRoute = kioskScreensBornePageRouteImport.update({
+  id: '/screens/borne/',
+  path: '/screens/borne/',
+  getParentRoute: () => kioskLayoutRoute,
+} as any)
+const kioskScreensDiscoursPageRoute =
+  kioskScreensDiscoursPageRouteImport.update({
+    id: '/screens/discours/',
+    path: '/screens/discours/',
+    getParentRoute: () => kioskLayoutRoute,
+  } as any)
+const kioskScreensOperateurPageRoute =
+  kioskScreensOperateurPageRouteImport.update({
+    id: '/screens/operateur/',
+    path: '/screens/operateur/',
+    getParentRoute: () => kioskLayoutRoute,
+  } as any)
 const privateBackofficeConversationsPageRoute =
   privateBackofficeConversationsPageRouteImport.update({
     id: '/backoffice/conversations/',
@@ -108,6 +140,11 @@ const privateProfileSecurityPageRoute =
     path: '/security/',
     getParentRoute: () => privateProfileLayoutRoute,
   } as any)
+const publicITokenPageRoute = publicITokenPageRouteImport.update({
+  id: '/(public)/i/$token/',
+  path: '/i/$token/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const privateBackofficeConversationsConversationIdPageRoute =
   privateBackofficeConversationsConversationIdPageRouteImport.update({
     id: '/backoffice/conversations/$conversationId/',
@@ -129,12 +166,17 @@ export interface FileRoutesByFullPath {
   '/forgot-password/': typeof guestauthForgotPasswordPageRoute
   '/login/': typeof guestauthLoginPageRoute
   '/reset-password/': typeof guestauthResetPasswordPageRoute
+  '/screens/accueil/': typeof kioskScreensAccueilPageRoute
+  '/screens/borne/': typeof kioskScreensBornePageRoute
+  '/screens/discours/': typeof kioskScreensDiscoursPageRoute
+  '/screens/operateur/': typeof kioskScreensOperateurPageRoute
   '/backoffice/conversations/': typeof privateBackofficeConversationsPageRoute
   '/backoffice/guests/': typeof privateBackofficeGuestsPageRoute
   '/backoffice/handoffs/': typeof privateBackofficeHandoffsPageRoute
   '/backoffice/qr-sheet/': typeof privateBackofficeQrSheetPageRoute
   '/profile/privacy/': typeof privateProfilePrivacyPageRoute
   '/profile/security/': typeof privateProfileSecurityPageRoute
+  '/i/$token/': typeof publicITokenPageRoute
   '/backoffice/conversations/$conversationId/': typeof privateBackofficeConversationsConversationIdPageRoute
   '/backoffice/guests/$guestId/': typeof privateBackofficeGuestsGuestIdPageRoute
 }
@@ -145,17 +187,23 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof guestauthForgotPasswordPageRoute
   '/login': typeof guestauthLoginPageRoute
   '/reset-password': typeof guestauthResetPasswordPageRoute
+  '/screens/accueil': typeof kioskScreensAccueilPageRoute
+  '/screens/borne': typeof kioskScreensBornePageRoute
+  '/screens/discours': typeof kioskScreensDiscoursPageRoute
+  '/screens/operateur': typeof kioskScreensOperateurPageRoute
   '/backoffice/conversations': typeof privateBackofficeConversationsPageRoute
   '/backoffice/guests': typeof privateBackofficeGuestsPageRoute
   '/backoffice/handoffs': typeof privateBackofficeHandoffsPageRoute
   '/backoffice/qr-sheet': typeof privateBackofficeQrSheetPageRoute
   '/profile/privacy': typeof privateProfilePrivacyPageRoute
   '/profile/security': typeof privateProfileSecurityPageRoute
+  '/i/$token': typeof publicITokenPageRoute
   '/backoffice/conversations/$conversationId': typeof privateBackofficeConversationsConversationIdPageRoute
   '/backoffice/guests/$guestId': typeof privateBackofficeGuestsGuestIdPageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(kiosk)': typeof kioskLayoutRouteWithChildren
   '/(private)': typeof privateLayoutRouteWithChildren
   '/(guest)/(auth)': typeof guestauthLayoutRouteWithChildren
   '/(private)/profile': typeof privateProfileLayoutRouteWithChildren
@@ -165,12 +213,17 @@ export interface FileRoutesById {
   '/(guest)/(auth)/forgot-password/': typeof guestauthForgotPasswordPageRoute
   '/(guest)/(auth)/login/': typeof guestauthLoginPageRoute
   '/(guest)/(auth)/reset-password/': typeof guestauthResetPasswordPageRoute
+  '/(kiosk)/screens/accueil/': typeof kioskScreensAccueilPageRoute
+  '/(kiosk)/screens/borne/': typeof kioskScreensBornePageRoute
+  '/(kiosk)/screens/discours/': typeof kioskScreensDiscoursPageRoute
+  '/(kiosk)/screens/operateur/': typeof kioskScreensOperateurPageRoute
   '/(private)/backoffice/conversations/': typeof privateBackofficeConversationsPageRoute
   '/(private)/backoffice/guests/': typeof privateBackofficeGuestsPageRoute
   '/(private)/backoffice/handoffs/': typeof privateBackofficeHandoffsPageRoute
   '/(private)/backoffice/qr-sheet/': typeof privateBackofficeQrSheetPageRoute
   '/(private)/profile/privacy/': typeof privateProfilePrivacyPageRoute
   '/(private)/profile/security/': typeof privateProfileSecurityPageRoute
+  '/(public)/i/$token/': typeof publicITokenPageRoute
   '/(private)/backoffice/conversations/$conversationId/': typeof privateBackofficeConversationsConversationIdPageRoute
   '/(private)/backoffice/guests/$guestId/': typeof privateBackofficeGuestsGuestIdPageRoute
 }
@@ -184,12 +237,17 @@ export interface FileRouteTypes {
     | '/forgot-password/'
     | '/login/'
     | '/reset-password/'
+    | '/screens/accueil/'
+    | '/screens/borne/'
+    | '/screens/discours/'
+    | '/screens/operateur/'
     | '/backoffice/conversations/'
     | '/backoffice/guests/'
     | '/backoffice/handoffs/'
     | '/backoffice/qr-sheet/'
     | '/profile/privacy/'
     | '/profile/security/'
+    | '/i/$token/'
     | '/backoffice/conversations/$conversationId/'
     | '/backoffice/guests/$guestId/'
   fileRoutesByTo: FileRoutesByTo
@@ -200,16 +258,22 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/reset-password'
+    | '/screens/accueil'
+    | '/screens/borne'
+    | '/screens/discours'
+    | '/screens/operateur'
     | '/backoffice/conversations'
     | '/backoffice/guests'
     | '/backoffice/handoffs'
     | '/backoffice/qr-sheet'
     | '/profile/privacy'
     | '/profile/security'
+    | '/i/$token'
     | '/backoffice/conversations/$conversationId'
     | '/backoffice/guests/$guestId'
   id:
     | '__root__'
+    | '/(kiosk)'
     | '/(private)'
     | '/(guest)/(auth)'
     | '/(private)/profile'
@@ -219,23 +283,37 @@ export interface FileRouteTypes {
     | '/(guest)/(auth)/forgot-password/'
     | '/(guest)/(auth)/login/'
     | '/(guest)/(auth)/reset-password/'
+    | '/(kiosk)/screens/accueil/'
+    | '/(kiosk)/screens/borne/'
+    | '/(kiosk)/screens/discours/'
+    | '/(kiosk)/screens/operateur/'
     | '/(private)/backoffice/conversations/'
     | '/(private)/backoffice/guests/'
     | '/(private)/backoffice/handoffs/'
     | '/(private)/backoffice/qr-sheet/'
     | '/(private)/profile/privacy/'
     | '/(private)/profile/security/'
+    | '/(public)/i/$token/'
     | '/(private)/backoffice/conversations/$conversationId/'
     | '/(private)/backoffice/guests/$guestId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  kioskLayoutRoute: typeof kioskLayoutRouteWithChildren
   privateLayoutRoute: typeof privateLayoutRouteWithChildren
   guestauthLayoutRoute: typeof guestauthLayoutRouteWithChildren
+  publicITokenPageRoute: typeof publicITokenPageRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(kiosk)': {
+      id: '/(kiosk)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof kioskLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(private)': {
       id: '/(private)'
       path: ''
@@ -299,6 +377,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof guestauthResetPasswordPageRouteImport
       parentRoute: typeof guestauthLayoutRoute
     }
+    '/(kiosk)/screens/accueil/': {
+      id: '/(kiosk)/screens/accueil/'
+      path: '/screens/accueil'
+      fullPath: '/screens/accueil/'
+      preLoaderRoute: typeof kioskScreensAccueilPageRouteImport
+      parentRoute: typeof kioskLayoutRoute
+    }
+    '/(kiosk)/screens/borne/': {
+      id: '/(kiosk)/screens/borne/'
+      path: '/screens/borne'
+      fullPath: '/screens/borne/'
+      preLoaderRoute: typeof kioskScreensBornePageRouteImport
+      parentRoute: typeof kioskLayoutRoute
+    }
+    '/(kiosk)/screens/discours/': {
+      id: '/(kiosk)/screens/discours/'
+      path: '/screens/discours'
+      fullPath: '/screens/discours/'
+      preLoaderRoute: typeof kioskScreensDiscoursPageRouteImport
+      parentRoute: typeof kioskLayoutRoute
+    }
+    '/(kiosk)/screens/operateur/': {
+      id: '/(kiosk)/screens/operateur/'
+      path: '/screens/operateur'
+      fullPath: '/screens/operateur/'
+      preLoaderRoute: typeof kioskScreensOperateurPageRouteImport
+      parentRoute: typeof kioskLayoutRoute
+    }
     '/(private)/backoffice/conversations/': {
       id: '/(private)/backoffice/conversations/'
       path: '/backoffice/conversations'
@@ -341,6 +447,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof privateProfileSecurityPageRouteImport
       parentRoute: typeof privateProfileLayoutRoute
     }
+    '/(public)/i/$token/': {
+      id: '/(public)/i/$token/'
+      path: '/i/$token'
+      fullPath: '/i/$token/'
+      preLoaderRoute: typeof publicITokenPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(private)/backoffice/conversations/$conversationId/': {
       id: '/(private)/backoffice/conversations/$conversationId/'
       path: '/backoffice/conversations/$conversationId'
@@ -357,6 +470,24 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface kioskLayoutRouteChildren {
+  kioskScreensAccueilPageRoute: typeof kioskScreensAccueilPageRoute
+  kioskScreensBornePageRoute: typeof kioskScreensBornePageRoute
+  kioskScreensDiscoursPageRoute: typeof kioskScreensDiscoursPageRoute
+  kioskScreensOperateurPageRoute: typeof kioskScreensOperateurPageRoute
+}
+
+const kioskLayoutRouteChildren: kioskLayoutRouteChildren = {
+  kioskScreensAccueilPageRoute: kioskScreensAccueilPageRoute,
+  kioskScreensBornePageRoute: kioskScreensBornePageRoute,
+  kioskScreensDiscoursPageRoute: kioskScreensDiscoursPageRoute,
+  kioskScreensOperateurPageRoute: kioskScreensOperateurPageRoute,
+}
+
+const kioskLayoutRouteWithChildren = kioskLayoutRoute._addFileChildren(
+  kioskLayoutRouteChildren,
+)
 
 interface privateProfileLayoutRouteChildren {
   privateProfilePageRoute: typeof privateProfilePageRoute
@@ -421,8 +552,10 @@ const guestauthLayoutRouteWithChildren = guestauthLayoutRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  kioskLayoutRoute: kioskLayoutRouteWithChildren,
   privateLayoutRoute: privateLayoutRouteWithChildren,
   guestauthLayoutRoute: guestauthLayoutRouteWithChildren,
+  publicITokenPageRoute: publicITokenPageRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

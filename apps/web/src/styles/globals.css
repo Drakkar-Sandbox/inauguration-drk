@@ -4,3 +4,16 @@
 @import "@workspace/ui-theme/tailwind";
 
 @source "../../node_modules/@workspace/ui-react";
+
+/* Inauguration kiosks: QR viewfinder sweep (`animate-[scan_…]`). */
+@keyframes scan {
+	0%,
+	100% {
+		top: 14%;
+		opacity: 0.4;
+	}
+	50% {
+		top: 86%;
+		opacity: 1;
+	}
+}

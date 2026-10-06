@@ -1,0 +1,18 @@
+{
+	"features.inauguration.invitation.hooks.conversation": {
+		"apology": {
+			"generic": "Pardonnez-moi, la liaison est un peu capricieuse ce soir. Pourriez-vous répéter ?",
+			"busy": "Vous allez plus vite que mon ombre. Accordez-moi un instant, puis reprenons.",
+			"invalid": "Je crains de ne pas avoir saisi. Pourriez-vous reformuler, ou choisir une réponse ci-dessous ?",
+			"not-heard": "Je n'ai rien entendu. Maintenez le bouton pendant que vous parlez, ou écrivez-moi."
+		}
+	},
+
+	"features.inauguration.invitation.hooks.plus-one-form": {
+		"validation": {
+			"first-name": "Indiquez son prénom.",
+			"last-name": "Indiquez son nom.",
+			"email": "Cette adresse email ne semble pas valide."
+		}
+	}
+}
