@@ -1,7 +1,9 @@
 import { errors as authErrors } from "@adonisjs/auth";
 import { errors as bouncerErrors } from "@adonisjs/bouncer";
+import { Exception } from "@adonisjs/core/exceptions";
 import { ExceptionHandler, HttpContext } from "@adonisjs/core/http";
 import app from "@adonisjs/core/services/app";
+import type { HttpError } from "@adonisjs/core/types/http";
 import { errors as limiterErrors } from "@adonisjs/limiter";
 import * as Sentry from "@sentry/node";
 
@@ -53,6 +55,31 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 		}
 
 		return super.handle(error, ctx);
+	}
+
+	/**
+	 * JSON errors always carry a stable `code` (e.g. `E_GUEST_NOT_FOUND`) the clients
+	 * branch on, in every environment. The stack trace is only added in debug mode, and
+	 * unexpected server errors never expose their message in production.
+	 */
+	async renderErrorAsJSON(error: HttpError, ctx: HttpContext) {
+		ctx.response.status(error.status).send(this.#toJSON(error, ctx));
+	}
+
+	async renderValidationErrorAsJSON(error: HttpError & { messages?: unknown }, ctx: HttpContext) {
+		ctx.response.status(error.status).send({ ...this.#toJSON(error, ctx), errors: error.messages });
+	}
+
+	#toJSON(error: HttpError, ctx: HttpContext) {
+		const debug = this.isDebuggingEnabled(ctx);
+		const unexpected = error.status >= 500 && !(error instanceof Exception);
+
+		return {
+			message: unexpected && !debug ? "Internal server error" : error.message,
+			// Only application codes: driver codes (e.g. Postgres "23505") stay internal.
+			code: error.code && /^E_[A-Z0-9_]+$/.test(error.code) ? error.code : null,
+			...(debug && { stack: error.stack }),
+		};
 	}
 
 	/**
