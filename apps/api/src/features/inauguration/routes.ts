@@ -6,3 +6,6 @@ import "#features/inauguration/backoffice/handoffs/routes";
 import "#features/inauguration/backoffice/conversations/routes";
 import "#features/inauguration/kiosk/checkin/routes";
 import "#features/inauguration/kiosk/speech/routes";
+import "#features/inauguration/leif/signup/routes";
+import "#features/inauguration/leif/kiosk/routes";
+import "#features/inauguration/leif/voice/routes";

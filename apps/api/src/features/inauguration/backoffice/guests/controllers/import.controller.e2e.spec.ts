@@ -48,6 +48,25 @@ test.group(
 			assert.equal(existing.company, "New Co");
 		});
 
+		test("it should accept the upload when the client sends the superjson header", async ({
+			client,
+		}) => {
+			const user = await UserFactory.create();
+
+			const response = await client
+				.visit("inauguration.backoffice.guests.import")
+				.loginAs(user)
+				.header("x-superjson", "true")
+				.file("file", Buffer.from("first_name,last_name\nAda,Lovelace\n"), {
+					filename: "guests.csv",
+					contentType: "text/csv",
+				});
+
+			response.assertOk();
+			// The response is superjson-encoded because of the request header.
+			response.assertBodyContains({ json: { created: 1, updated: 0, errors: [] } });
+		});
+
 		test("it should report missing required columns", async ({ client }) => {
 			const user = await UserFactory.create();
 

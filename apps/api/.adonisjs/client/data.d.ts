@@ -16,6 +16,10 @@ export type Invitation = Awaited<ReturnType<typeof import("#presenters/invitatio
 
 export type KioskGuest = Awaited<ReturnType<typeof import("#presenters/kiosk_guest.presenter").default.prototype.toJSON>>;
 
+export type LeifKioskTurn = Awaited<ReturnType<typeof import("#presenters/leif_kiosk_turn.presenter").default.prototype.toJSON>>;
+
+export type LeifSignupTurn = Awaited<ReturnType<typeof import("#presenters/leif_signup_turn.presenter").default.prototype.toJSON>>;
+
 export type Pagination = Awaited<ReturnType<typeof import("#presenters/pagination.presenter").default.prototype.toJSON>>;
 
 export type User = Awaited<ReturnType<typeof import("#presenters/user.presenter").default.prototype.toJSON>>;

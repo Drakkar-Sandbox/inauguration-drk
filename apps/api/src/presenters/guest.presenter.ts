@@ -35,6 +35,7 @@ export default class GuestPresenter {
 						firstName: plusOne.firstName,
 						lastName: plusOne.lastName,
 						email: plusOne.email,
+						status: plusOne.status,
 						checkedInAt: plusOne.checkedInAt?.toJSDate() ?? null,
 					}
 				: null,

@@ -14,7 +14,11 @@ export default class ImportGuestsController {
 	async handle({ request, bouncer }: HttpContext) {
 		await bouncer.with(GuestPolicy).authorize("import");
 
-		const { file } = await request.validateUsing(ImportGuestsController.payloadSchema);
+		// Validated from the raw multipart files: the superjson middleware replaces the
+		// request body when the client sends `x-superjson`, which drops multipart data.
+		const { file } = await ImportGuestsController.payloadSchema.validate({
+			file: request.file("file"),
+		});
 
 		const content = await readFile(file.tmpPath!, "utf-8");
 

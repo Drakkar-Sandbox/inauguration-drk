@@ -16,6 +16,15 @@ export default await Env.create(new URL("../", import.meta.url), {
 	// Event Config
 	EVENT_AVATAR_NAME: Env.schema.string.optional(),
 
+	// Leif AI Config (optional: without keys the avatar runs scripted, text only)
+	ANTHROPIC_API_KEY: Env.schema.string.optional(),
+	ANTHROPIC_MODEL: Env.schema.string.optional(),
+	ANTHROPIC_FAST_MODEL: Env.schema.string.optional(),
+	ELEVENLABS_API_KEY: Env.schema.string.optional(),
+	ELEVENLABS_VOICE_ID: Env.schema.string.optional(),
+	ELEVENLABS_TTS_MODEL: Env.schema.string.optional(),
+	ELEVENLABS_STT_MODEL: Env.schema.string.optional(),
+
 	// Cookie Config
 	COOKIE_DOMAIN: Env.schema.string.optionalWhen(process.env.NODE_ENV !== "production"),
 

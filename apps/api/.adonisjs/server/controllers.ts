@@ -55,6 +55,22 @@ export const controllers = {
           Trigger: () => import('#src/features/inauguration/kiosk/speech/controllers/trigger.controller'),
         },
       },
+      leif: {
+        kiosk: {
+          EndSession: () => import('#src/features/inauguration/leif/kiosk/controllers/end_session.controller'),
+          Greeting: () => import('#src/features/inauguration/leif/kiosk/controllers/greeting.controller'),
+          Handoff: () => import('#src/features/inauguration/leif/kiosk/controllers/handoff.controller'),
+          Message: () => import('#src/features/inauguration/leif/kiosk/controllers/message.controller'),
+          StartSession: () => import('#src/features/inauguration/leif/kiosk/controllers/start_session.controller'),
+        },
+        signup: {
+          Message: () => import('#src/features/inauguration/leif/signup/controllers/message.controller'),
+        },
+        voice: {
+          Stt: () => import('#src/features/inauguration/leif/voice/controllers/stt.controller'),
+          Tts: () => import('#src/features/inauguration/leif/voice/controllers/tts.controller'),
+        },
+      },
     },
     web: {
       accountManagement: {

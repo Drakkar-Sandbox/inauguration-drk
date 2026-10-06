@@ -1,4 +1,4 @@
-import Guest, { GuestKind, GuestStatus, MeetingStatus } from "#models/guest";
+import Guest, { type GuestKind, type GuestStatus, type MeetingStatus } from "#models/guest";
 
 export type GuestFilters = {
 	page?: number;

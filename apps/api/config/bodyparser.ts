@@ -21,7 +21,8 @@ const bodyParserConfig = defineConfig({
 		autoProcess: true,
 		convertEmptyStringsToNull: true,
 		trimWhitespaces: true,
-		processManually: [],
+		// Avatar speech is streamed to memory, never written to disk.
+		processManually: ["/leif/stt"],
 		limit: "20mb",
 		types: ["multipart/form-data"],
 	},

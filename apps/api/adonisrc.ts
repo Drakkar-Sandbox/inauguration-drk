@@ -45,6 +45,7 @@ export default defineConfig({
 		() => import("@adonisjs/queue/queue_provider"),
 		() => import("@adonisjs/bouncer/bouncer_provider"),
 		() => import("@adonisjs/drive/drive_provider"),
+		() => import("#features/inauguration/leif/leif_provider"),
 	],
 
 	preloads: [

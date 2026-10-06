@@ -162,6 +162,36 @@ const routes = {
     tokens: [{"old":"/kiosk/speech/reset","type":0,"val":"kiosk","end":""},{"old":"/kiosk/speech/reset","type":0,"val":"speech","end":""},{"old":"/kiosk/speech/reset","type":0,"val":"reset","end":""}],
     types: placeholder as Registry['inauguration.kiosk.speech.reset']['types'],
   },
+  'inauguration.kiosk.leif.greeting': {
+    methods: ["POST"],
+    pattern: '/kiosk/leif/greeting',
+    tokens: [{"old":"/kiosk/leif/greeting","type":0,"val":"kiosk","end":""},{"old":"/kiosk/leif/greeting","type":0,"val":"leif","end":""},{"old":"/kiosk/leif/greeting","type":0,"val":"greeting","end":""}],
+    types: placeholder as Registry['inauguration.kiosk.leif.greeting']['types'],
+  },
+  'inauguration.kiosk.leif.start_session': {
+    methods: ["POST"],
+    pattern: '/kiosk/leif/sessions',
+    tokens: [{"old":"/kiosk/leif/sessions","type":0,"val":"kiosk","end":""},{"old":"/kiosk/leif/sessions","type":0,"val":"leif","end":""},{"old":"/kiosk/leif/sessions","type":0,"val":"sessions","end":""}],
+    types: placeholder as Registry['inauguration.kiosk.leif.start_session']['types'],
+  },
+  'inauguration.kiosk.leif.message': {
+    methods: ["POST"],
+    pattern: '/kiosk/leif/sessions/:id/message',
+    tokens: [{"old":"/kiosk/leif/sessions/:id/message","type":0,"val":"kiosk","end":""},{"old":"/kiosk/leif/sessions/:id/message","type":0,"val":"leif","end":""},{"old":"/kiosk/leif/sessions/:id/message","type":0,"val":"sessions","end":""},{"old":"/kiosk/leif/sessions/:id/message","type":1,"val":"id","end":""},{"old":"/kiosk/leif/sessions/:id/message","type":0,"val":"message","end":""}],
+    types: placeholder as Registry['inauguration.kiosk.leif.message']['types'],
+  },
+  'inauguration.kiosk.leif.handoff': {
+    methods: ["POST"],
+    pattern: '/kiosk/leif/sessions/:id/handoff',
+    tokens: [{"old":"/kiosk/leif/sessions/:id/handoff","type":0,"val":"kiosk","end":""},{"old":"/kiosk/leif/sessions/:id/handoff","type":0,"val":"leif","end":""},{"old":"/kiosk/leif/sessions/:id/handoff","type":0,"val":"sessions","end":""},{"old":"/kiosk/leif/sessions/:id/handoff","type":1,"val":"id","end":""},{"old":"/kiosk/leif/sessions/:id/handoff","type":0,"val":"handoff","end":""}],
+    types: placeholder as Registry['inauguration.kiosk.leif.handoff']['types'],
+  },
+  'inauguration.kiosk.leif.end_session': {
+    methods: ["POST"],
+    pattern: '/kiosk/leif/sessions/:id/end',
+    tokens: [{"old":"/kiosk/leif/sessions/:id/end","type":0,"val":"kiosk","end":""},{"old":"/kiosk/leif/sessions/:id/end","type":0,"val":"leif","end":""},{"old":"/kiosk/leif/sessions/:id/end","type":0,"val":"sessions","end":""},{"old":"/kiosk/leif/sessions/:id/end","type":1,"val":"id","end":""},{"old":"/kiosk/leif/sessions/:id/end","type":0,"val":"end","end":""}],
+    types: placeholder as Registry['inauguration.kiosk.leif.end_session']['types'],
+  },
   'web.account_management.authentication.login': {
     methods: ["POST"],
     pattern: '/web/account-management/authentication/login',
@@ -233,6 +263,24 @@ const routes = {
     pattern: '/invitations/:token/qr.png',
     tokens: [{"old":"/invitations/:token/qr.png","type":0,"val":"invitations","end":""},{"old":"/invitations/:token/qr.png","type":1,"val":"token","end":""},{"old":"/invitations/:token/qr.png","type":0,"val":"qr.png","end":""}],
     types: placeholder as Registry['inauguration.invitations.qr_code']['types'],
+  },
+  'inauguration.invitations.leif.message': {
+    methods: ["POST"],
+    pattern: '/invitations/:token/leif/message',
+    tokens: [{"old":"/invitations/:token/leif/message","type":0,"val":"invitations","end":""},{"old":"/invitations/:token/leif/message","type":1,"val":"token","end":""},{"old":"/invitations/:token/leif/message","type":0,"val":"leif","end":""},{"old":"/invitations/:token/leif/message","type":0,"val":"message","end":""}],
+    types: placeholder as Registry['inauguration.invitations.leif.message']['types'],
+  },
+  'inauguration.leif.tts': {
+    methods: ["POST"],
+    pattern: '/leif/tts',
+    tokens: [{"old":"/leif/tts","type":0,"val":"leif","end":""},{"old":"/leif/tts","type":0,"val":"tts","end":""}],
+    types: placeholder as Registry['inauguration.leif.tts']['types'],
+  },
+  'inauguration.leif.stt': {
+    methods: ["POST"],
+    pattern: '/leif/stt',
+    tokens: [{"old":"/leif/stt","type":0,"val":"leif","end":""},{"old":"/leif/stt","type":0,"val":"stt","end":""}],
+    types: placeholder as Registry['inauguration.leif.stt']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

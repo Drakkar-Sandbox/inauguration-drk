@@ -319,6 +319,66 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/kiosk/speech/controllers/reset.controller').default['handle']>>>
     }
   }
+  'inauguration.kiosk.leif.greeting': {
+    methods: ["POST"]
+    pattern: '/kiosk/leif/greeting'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#src/features/inauguration/leif/kiosk/controllers/greeting.controller').default)['payloadSchema']>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#src/features/inauguration/leif/kiosk/controllers/greeting.controller').default)['payloadSchema']>>
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/greeting.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/greeting.controller').default['handle']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'inauguration.kiosk.leif.start_session': {
+    methods: ["POST"]
+    pattern: '/kiosk/leif/sessions'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#src/features/inauguration/leif/kiosk/controllers/start_session.controller').default)['payloadSchema']>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#src/features/inauguration/leif/kiosk/controllers/start_session.controller').default)['payloadSchema']>>
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/start_session.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/start_session.controller').default['handle']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'inauguration.kiosk.leif.message': {
+    methods: ["POST"]
+    pattern: '/kiosk/leif/sessions/:id/message'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#src/features/inauguration/leif/kiosk/controllers/message.controller').default)['payloadSchema']>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#src/features/inauguration/leif/kiosk/controllers/message.controller').default)['payloadSchema']>>
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/message.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/message.controller').default['handle']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'inauguration.kiosk.leif.handoff': {
+    methods: ["POST"]
+    pattern: '/kiosk/leif/sessions/:id/handoff'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/handoff.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/handoff.controller').default['handle']>>>
+    }
+  }
+  'inauguration.kiosk.leif.end_session': {
+    methods: ["POST"]
+    pattern: '/kiosk/leif/sessions/:id/end'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/end_session.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/kiosk/controllers/end_session.controller').default['handle']>>>
+    }
+  }
   'web.account_management.authentication.login': {
     methods: ["POST"]
     pattern: '/web/account-management/authentication/login'
@@ -461,6 +521,42 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/invitation/controllers/qr_code.controller').default['handle']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/invitation/controllers/qr_code.controller').default['handle']>>>
+    }
+  }
+  'inauguration.invitations.leif.message': {
+    methods: ["POST"]
+    pattern: '/invitations/:token/leif/message'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#src/features/inauguration/leif/signup/controllers/message.controller').default)['payloadSchema']>>
+      paramsTuple: [ParamValue]
+      params: { token: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#src/features/inauguration/leif/signup/controllers/message.controller').default)['payloadSchema']>>
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/signup/controllers/message.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/signup/controllers/message.controller').default['handle']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'inauguration.leif.tts': {
+    methods: ["POST"]
+    pattern: '/leif/tts'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#src/features/inauguration/leif/voice/controllers/tts.controller').default)['payloadSchema']>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#src/features/inauguration/leif/voice/controllers/tts.controller').default)['payloadSchema']>>
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/voice/controllers/tts.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/voice/controllers/tts.controller').default['handle']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'inauguration.leif.stt': {
+    methods: ["POST"]
+    pattern: '/leif/stt'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/voice/controllers/stt.controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#src/features/inauguration/leif/voice/controllers/stt.controller').default['handle']>>>
     }
   }
 }

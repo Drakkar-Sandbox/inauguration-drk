@@ -30,6 +30,11 @@ export type ScannedRoutes = {
     'inauguration.kiosk.speech.current': { paramsTuple?: []; params?: {} }
     'inauguration.kiosk.speech.trigger': { paramsTuple?: []; params?: {} }
     'inauguration.kiosk.speech.reset': { paramsTuple?: []; params?: {} }
+    'inauguration.kiosk.leif.greeting': { paramsTuple?: []; params?: {} }
+    'inauguration.kiosk.leif.start_session': { paramsTuple?: []; params?: {} }
+    'inauguration.kiosk.leif.message': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'inauguration.kiosk.leif.handoff': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'inauguration.kiosk.leif.end_session': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'web.account_management.authentication.login': { paramsTuple?: []; params?: {} }
     'web.account_management.authentication.logout': { paramsTuple?: []; params?: {} }
     'web.account_management.password.forgot': { paramsTuple?: []; params?: {} }
@@ -42,6 +47,9 @@ export type ScannedRoutes = {
     'inauguration.invitations.delete_plus_one': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'inauguration.invitations.calendar': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'inauguration.invitations.qr_code': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
+    'inauguration.invitations.leif.message': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
+    'inauguration.leif.tts': { paramsTuple?: []; params?: {} }
+    'inauguration.leif.stt': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
@@ -103,11 +111,19 @@ export type ScannedRoutes = {
     'inauguration.kiosk.checkin': { paramsTuple?: []; params?: {} }
     'inauguration.kiosk.speech.trigger': { paramsTuple?: []; params?: {} }
     'inauguration.kiosk.speech.reset': { paramsTuple?: []; params?: {} }
+    'inauguration.kiosk.leif.greeting': { paramsTuple?: []; params?: {} }
+    'inauguration.kiosk.leif.start_session': { paramsTuple?: []; params?: {} }
+    'inauguration.kiosk.leif.message': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'inauguration.kiosk.leif.handoff': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'inauguration.kiosk.leif.end_session': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'web.account_management.authentication.login': { paramsTuple?: []; params?: {} }
     'web.account_management.password.forgot': { paramsTuple?: []; params?: {} }
     'web.account_management.password.reset': { paramsTuple?: []; params?: {} }
     'inauguration.invitations.respond': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'inauguration.invitations.consent': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
+    'inauguration.invitations.leif.message': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
+    'inauguration.leif.tts': { paramsTuple?: []; params?: {} }
+    'inauguration.leif.stt': { paramsTuple?: []; params?: {} }
   }
   PATCH: {
     'inauguration.backoffice.handoffs.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

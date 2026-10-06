@@ -1,7 +1,7 @@
 import db from "@adonisjs/lucid/services/db";
 
-import { MEETING_STATUSES, MeetingStatus } from "#models/guest";
-import { HANDOFF_STATUSES, HandoffStatus } from "#models/handoff";
+import { MEETING_STATUSES, type MeetingStatus } from "#models/guest";
+import { HANDOFF_STATUSES, type HandoffStatus } from "#models/handoff";
 
 export default class DashboardService {
 	async stats() {

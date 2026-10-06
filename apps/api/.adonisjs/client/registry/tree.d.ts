@@ -63,6 +63,13 @@ export interface ApiDefinition {
         trigger: typeof routes['inauguration.kiosk.speech.trigger']
         reset: typeof routes['inauguration.kiosk.speech.reset']
       }
+      leif: {
+        greeting: typeof routes['inauguration.kiosk.leif.greeting']
+        startSession: typeof routes['inauguration.kiosk.leif.start_session']
+        message: typeof routes['inauguration.kiosk.leif.message']
+        handoff: typeof routes['inauguration.kiosk.leif.handoff']
+        endSession: typeof routes['inauguration.kiosk.leif.end_session']
+      }
     }
     invitations: {
       view: typeof routes['inauguration.invitations.view']
@@ -72,6 +79,13 @@ export interface ApiDefinition {
       deletePlusOne: typeof routes['inauguration.invitations.delete_plus_one']
       calendar: typeof routes['inauguration.invitations.calendar']
       qrCode: typeof routes['inauguration.invitations.qr_code']
+      leif: {
+        message: typeof routes['inauguration.invitations.leif.message']
+      }
+    }
+    leif: {
+      tts: typeof routes['inauguration.leif.tts']
+      stt: typeof routes['inauguration.leif.stt']
     }
   }
 }
