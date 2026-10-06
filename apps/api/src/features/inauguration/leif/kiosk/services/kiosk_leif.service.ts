@@ -8,13 +8,15 @@ import { DateTime } from "luxon";
 import eventConfig from "#config/event";
 import GuestNotFoundException from "#exceptions/guest_not_found.exception";
 import CheckinService from "#features/inauguration/kiosk/checkin/services/checkin.service";
+import type { GuestRef } from "#features/inauguration/kiosk/checkin/validators/guest_ref.validator";
 import { type KioskContext, LeifBrain } from "#features/inauguration/leif/brain/leif_brain";
+import { isBlockedOutput } from "#features/inauguration/leif/brain/output_filter";
 import LeifSessionNotFoundException from "#features/inauguration/leif/exceptions/leif_session_not_found.exception";
 import LeifLinesService from "#features/inauguration/leif/services/leif_lines.service";
 import LeifQuotaService from "#features/inauguration/leif/services/leif_quota.service";
 import LeifSpeechService from "#features/inauguration/leif/voice/services/leif_speech.service";
 import Conversation, { type ConversationTranscriptEntry } from "#models/conversation";
-import Guest from "#models/guest";
+import type Guest from "#models/guest";
 import Handoff from "#models/handoff";
 
 export type KioskSession = {
@@ -53,8 +55,8 @@ export default class KioskLeifService {
 	/**
 	 * Reception screen welcome. Uses the pre-generated audio when available.
 	 */
-	async greeting(tokenInput: string) {
-		const guest = await this.#findGuest({ token: this.checkinService.extractToken(tokenInput) });
+	async greeting(ref: GuestRef) {
+		const guest = await this.#findGuest(ref);
 		const text = this.lines.receptionGreeting(guest);
 
 		let speech = null;
@@ -67,8 +69,8 @@ export default class KioskLeifService {
 		return { guest, text, speech };
 	}
 
-	async start(tokenInput: string): Promise<KioskTurn> {
-		const guest = await this.#findGuest({ token: this.checkinService.extractToken(tokenInput) });
+	async start(ref: GuestRef): Promise<KioskTurn> {
+		const guest = await this.#findGuest(ref);
 		const text = this.lines.kioskWelcome(guest, guest.consentGivenAt !== null);
 		const session: KioskSession = {
 			id: randomUUID(),
@@ -87,10 +89,16 @@ export default class KioskLeifService {
 	async message(sessionId: string, text: string): Promise<KioskTurn> {
 		const session = await this.#load(sessionId);
 		await this.quota.consume("kiosk", session.id, MAX_TURNS_PER_SESSION);
-		const guest = await this.#findGuest({ id: session.guestId });
+		const guest = await this.#findGuest({ guestId: session.guestId });
 
 		this.#record(session, "guest", text);
-		const reply = await this.brain.kioskReply(this.#context(guest, session));
+		let reply = await this.brain.kioskReply(this.#context(guest, session));
+		if (isBlockedOutput(reply.text, guest.angleNotes)) {
+			reply = {
+				text: this.lines.kioskSafeLine(this.#referentFirstName(guest)),
+				offerHandoff: true,
+			};
+		}
 		this.#record(session, "avatar", reply.text);
 		await this.#save(session);
 
@@ -102,7 +110,7 @@ export default class KioskLeifService {
 	 */
 	async handoff(sessionId: string): Promise<KioskTurn & { handoff: Handoff }> {
 		const session = await this.#load(sessionId);
-		const guest = await this.#findGuest({ id: session.guestId });
+		const guest = await this.#findGuest({ guestId: session.guestId });
 
 		const text = this.lines.kioskHandoffDone(this.#referentFirstName(guest));
 		let handoff = session.handoffId ? await Handoff.find(session.handoffId) : null;
@@ -124,7 +132,7 @@ export default class KioskLeifService {
 
 	async end(sessionId: string) {
 		const session = await this.#load(sessionId);
-		const guest = await this.#findGuest({ id: session.guestId });
+		const guest = await this.#findGuest({ guestId: session.guestId });
 		const consent = guest.consentGivenAt !== null;
 
 		const summary = consent ? await this.brain.summarizeKiosk(this.#context(guest, session)) : null;
@@ -176,12 +184,12 @@ export default class KioskLeifService {
 		return guest.referent?.name.trim().split(/\s+/)[0] || null;
 	}
 
-	async #findGuest(where: { token: string } | { id: number }) {
-		const query = Guest.query().preload("referent").preload("host");
-		const guest =
-			"token" in where
-				? await query.where("token", where.token).first()
-				: await query.where("id", where.id).first();
+	async #findGuest(ref: GuestRef) {
+		const guest = await this.checkinService
+			.findQuery(ref)
+			.preload("referent")
+			.preload("host")
+			.first();
 		if (!guest) throw new GuestNotFoundException();
 
 		return guest;

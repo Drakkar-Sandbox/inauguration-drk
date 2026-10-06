@@ -12,7 +12,7 @@ router
 			.use(brutForceLimiter);
 		router
 			.delete("/logout", [controllers.features.web.accountManagement.authentication.Logout])
-			.use(middleware.auth({ guards: ["web"] }));
+			.use(middleware.auth({ guards: ["web"], roles: ["admin", "kiosk"] }));
 	})
 	.prefix("/web/account-management/authentication")
 	.as("web.account_management.authentication");

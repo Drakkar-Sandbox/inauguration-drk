@@ -7,6 +7,7 @@ export default class UserPresenter {
 
 			name: user.name,
 			email: user.email,
+			role: user.role,
 
 			createdAt: user.createdAt.toJSDate(),
 			updatedAt: user.updatedAt.toJSDate(),

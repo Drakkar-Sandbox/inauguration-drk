@@ -86,7 +86,8 @@ const summaryValidator = vine.create({
 /**
  * Leif powered by Claude. Every output is constrained by a JSON schema and validated
  * again here; any failure (network, refusal, invalid output) falls back to the scripted
- * brain so the dialogue never breaks. Guest texts are never logged.
+ * brain so the dialogue never breaks. Content filters (money, angle notes) are applied by
+ * the conversation services, whatever the brain. Guest texts are never logged.
  */
 export default class AnthropicLeifBrain extends LeifBrain {
 	readonly mode = "ai" as const;
@@ -108,11 +109,7 @@ export default class AnthropicLeifBrain extends LeifBrain {
 				schema: SIGNUP_SCHEMA,
 				maxTokens: 400,
 			});
-			const understanding = await signupValidator.validate(output);
-
-			return this.#hasLeak(understanding.answer)
-				? { ...understanding, answer: null }
-				: understanding;
+			return await signupValidator.validate(output);
 		} catch (error) {
 			this.#warn("understandSignup", error);
 			return this.fallback.understandSignup(input);
@@ -128,10 +125,7 @@ export default class AnthropicLeifBrain extends LeifBrain {
 				schema: KIOSK_REPLY_SCHEMA,
 				maxTokens: 400,
 			});
-			const reply = await kioskReplyValidator.validate(output);
-			if (this.#hasLeak(reply.text, context.angleNotes)) return this.fallback.kioskReply(context);
-
-			return reply;
+			return await kioskReplyValidator.validate(output);
 		} catch (error) {
 			this.#warn("kioskReply", error);
 			return this.fallback.kioskReply(context);
@@ -187,16 +181,6 @@ export default class AnthropicLeifBrain extends LeifBrain {
 		if (!text) throw new Error("Empty response");
 
 		return JSON.parse(text);
-	}
-
-	/**
-	 * Last-resort output filter: no prices and no verbatim angle notes on screen.
-	 */
-	#hasLeak(text: string | null, angleNotes?: string | null) {
-		if (!text) return false;
-		if (/\d\s?(€|euros?|k€)|\b(tarif|devis)\b/i.test(text)) return true;
-
-		return Boolean(angleNotes && angleNotes.length >= 20 && text.includes(angleNotes));
 	}
 
 	#warn(operation: string, error: unknown) {

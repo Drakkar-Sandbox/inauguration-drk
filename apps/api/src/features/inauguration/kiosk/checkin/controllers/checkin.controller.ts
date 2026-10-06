@@ -4,6 +4,7 @@ import vine from "@vinejs/vine";
 
 import CheckinPolicy from "#features/inauguration/kiosk/checkin/policies/checkin.policy";
 import CheckinService from "#features/inauguration/kiosk/checkin/services/checkin.service";
+import { GuestRefSchema } from "#features/inauguration/kiosk/checkin/validators/guest_ref.validator";
 import KioskGuestPresenter from "#presenters/kiosk_guest.presenter";
 
 @inject()
@@ -16,9 +17,9 @@ export default class CheckinController {
 	async handle({ request, bouncer }: HttpContext) {
 		await bouncer.with(CheckinPolicy).authorize("checkin");
 
-		const { token } = await request.validateUsing(CheckinController.payloadSchema);
+		const ref = await request.validateUsing(CheckinController.payloadSchema);
 
-		const { guest, alreadyCheckedIn } = await this.checkinService.checkin(token);
+		const { guest, alreadyCheckedIn } = await this.checkinService.checkin(ref);
 
 		return {
 			guest: this.kioskGuestPresenter.toJSON(guest),
@@ -26,7 +27,8 @@ export default class CheckinController {
 		};
 	}
 
-	static payloadSchema = vine.create({
-		token: vine.string().minLength(1).maxLength(2048),
-	});
+	/**
+	 * `{ token }` from a QR scan, or `{ guestId }` after a manual name search.
+	 */
+	static payloadSchema = vine.create(GuestRefSchema);
 }

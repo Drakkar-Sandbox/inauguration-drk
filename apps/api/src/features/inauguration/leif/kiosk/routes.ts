@@ -11,6 +11,6 @@ router
 		router.post("/sessions/:id/handoff", [controllers.features.inauguration.leif.kiosk.Handoff]);
 		router.post("/sessions/:id/end", [controllers.features.inauguration.leif.kiosk.EndSession]);
 	})
-	.use(middleware.auth({ guards: ["web"] }))
+	.use(middleware.auth({ guards: ["web"], roles: ["admin", "kiosk"] }))
 	.prefix("/kiosk/leif")
 	.as("inauguration.kiosk.leif");

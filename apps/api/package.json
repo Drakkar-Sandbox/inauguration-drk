@@ -23,6 +23,7 @@
 		"script": "dev:app"
 	},
 	"imports": {
+		"#commands/*": "./commands/*.js",
 		"#config/*": "./config/*.js",
 		"#controllers/*": "./src/controllers/*.js",
 		"#database/*": "./database/*.js",

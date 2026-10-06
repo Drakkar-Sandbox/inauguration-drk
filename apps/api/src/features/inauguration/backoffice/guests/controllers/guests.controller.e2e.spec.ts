@@ -137,4 +137,29 @@ test.group("Features / Inauguration / Backoffice / Guests / Controllers", (group
 		response.assertUnauthorized();
 		response.assertBodyContains({ code: "E_UNAUTHENTICATED" });
 	});
+
+	test("it should remove the plus-one when staff mark the host as declined", async ({
+		client,
+		assert,
+	}) => {
+		const user = await UserFactory.create();
+		const host = await GuestFactory.apply("confirmed").create();
+		await GuestFactory.merge({
+			kind: "plus_one",
+			status: "confirmed",
+			hostGuestId: host.id,
+		}).create();
+
+		const response = await client
+			.visit("inauguration.backoffice.guests.update", { id: host.id })
+			.loginAs(user)
+			.json({ status: "declined", company: "Analytical Engines" });
+
+		response.assertOk();
+		await host.refresh();
+		assert.equal(host.status, "declined");
+		assert.equal(host.company, "Analytical Engines");
+		assert.isNotNull(host.respondedAt);
+		assert.isNull(await Guest.findBy("host_guest_id", host.id));
+	});
 });

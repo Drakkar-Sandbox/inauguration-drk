@@ -50,7 +50,7 @@ export class FileSchema extends BaseModel {
 }
 
 export class GuestSchema extends BaseModel {
-  static $columns = ['angleNotes', 'angleTopic', 'checkedInAt', 'company', 'consentGivenAt', 'consentRefusedAt', 'createdAt', 'email', 'firstName', 'hostGuestId', 'id', 'kind', 'lastName', 'meetingStatus', 'referentUserId', 'respondedAt', 'status', 'token', 'updatedAt'] as const
+  static $columns = ['angleNotes', 'angleTopic', 'checkedInAt', 'company', 'consentGivenAt', 'consentRefusedAt', 'createdAt', 'email', 'firstName', 'hostGuestId', 'id', 'kind', 'lastName', 'meetingStatus', 'plusOneChanges', 'referentUserId', 'respondedAt', 'status', 'token', 'updatedAt'] as const
   $columns = GuestSchema.$columns
   @column()
   declare angleNotes: string | null
@@ -80,6 +80,8 @@ export class GuestSchema extends BaseModel {
   declare lastName: string
   @column()
   declare meetingStatus: string
+  @column()
+  declare plusOneChanges: number
   @column()
   declare referentUserId: number | null
   @column.dateTime()
@@ -114,7 +116,7 @@ export class HandoffSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'id', 'name', 'password', 'updatedAt'] as const
+  static $columns = ['createdAt', 'email', 'id', 'name', 'password', 'role', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -126,6 +128,8 @@ export class UserSchema extends BaseModel {
   declare name: string
   @column({ serializeAs: null })
   declare password: string
+  @column()
+  declare role: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }

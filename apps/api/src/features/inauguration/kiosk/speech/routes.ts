@@ -10,6 +10,6 @@ router
 		router.post("/trigger", [controllers.features.inauguration.kiosk.speech.Trigger]);
 		router.post("/reset", [controllers.features.inauguration.kiosk.speech.Reset]);
 	})
-	.use(middleware.auth({ guards: ["web"] }))
+	.use(middleware.auth({ guards: ["web"], roles: ["admin", "kiosk"] }))
 	.prefix("/kiosk/speech")
 	.as("inauguration.kiosk.speech");

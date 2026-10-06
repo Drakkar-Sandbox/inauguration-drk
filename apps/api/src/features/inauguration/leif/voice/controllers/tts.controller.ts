@@ -11,8 +11,8 @@ import LeifSpeechService from "#features/inauguration/leif/voice/services/leif_s
 
 /**
  * Speaks a line with timestamps (subtitles + lip-sync). Returns null audio when no voice
- * is configured: clients then show the text only. Guests (token) can only voice lines
- * the avatar just said to them; staff sessions can voice any line.
+ * is configured: clients then show the text only. Guests (token) can only voice exactly
+ * the `reply.spoken` of their last signup turn; staff sessions can voice any line.
  */
 @inject()
 export default class LeifTtsController {
@@ -34,7 +34,7 @@ export default class LeifTtsController {
 
 			if (
 				this.leifSpeechService.enabled &&
-				!(await this.signupConversationService.hasSpoken(guest, text))
+				!(await this.signupConversationService.canVoice(guest, text))
 			) {
 				throw new LeifTextNotAllowedException();
 			}

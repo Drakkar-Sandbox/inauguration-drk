@@ -1,8 +1,10 @@
 import app from "@adonisjs/core/services/app";
 import testUtils from "@adonisjs/core/services/test_utils";
 import drive from "@adonisjs/drive/services/main";
+import { QueueManager } from "@adonisjs/queue";
 import redis from "@adonisjs/redis/services/main";
 import { test } from "@japa/runner";
+import { DateTime } from "luxon";
 
 import { GuestFactory } from "#database/factories/guest.factory";
 import { UserFactory } from "#database/factories/user.factory";
@@ -15,6 +17,8 @@ import {
 	type SynthesizedSpeech,
 } from "#features/inauguration/leif/voice/leif_voice";
 import EventService from "#services/event.service";
+
+type Turn = { step: string; reply: { text: string; spoken: string } };
 
 /**
  * Voice standing for ElevenLabs: no network, counts its calls.
@@ -53,6 +57,7 @@ test.group("Features / Inauguration / Leif / Voice / Controllers", (group) => {
 		return testUtils.db().withGlobalTransaction();
 	});
 	group.each.teardown(() => {
+		QueueManager.restore();
 		app.container.restore(LeifBrain);
 		app.container.restore(LeifVoice);
 		drive.restore();
@@ -99,19 +104,19 @@ test.group("Features / Inauguration / Leif / Voice / Controllers", (group) => {
 		const turn = await client
 			.visit("inauguration.invitations.leif.message", { token: guest.token })
 			.json({});
-		const { reply } = turn.body() as { reply: { text: string } };
+		const { reply } = turn.body() as { reply: { text: string; spoken: string } };
 
 		const first = await client
 			.visit("inauguration.leif.tts")
 			.header("x-invitation-token", guest.token)
-			.json({ text: reply.text });
+			.json({ text: reply.spoken });
 		first.assertOk();
 		first.assertBodyContains({ cached: false, alignment: { characters: ["a"] } });
 
 		const second = await client
 			.visit("inauguration.leif.tts")
 			.header("x-invitation-token", guest.token)
-			.json({ text: reply.text });
+			.json({ text: reply.spoken });
 		second.assertBodyContains({ cached: true });
 		assert.lengthOf(voice.synthesized, 1);
 	});
@@ -147,5 +152,59 @@ test.group("Features / Inauguration / Leif / Voice / Controllers", (group) => {
 
 		response.assertUnprocessableEntity();
 		response.assertBodyContains({ code: "E_LEIF_AUDIO_INVALID" });
+	});
+
+	test("it should never voice a plus-one typed by the guest, nor an older turn", async ({
+		client,
+		assert,
+	}) => {
+		QueueManager.fake();
+		app.container.swap(LeifVoice, () => new FakeVoice());
+		const guest = await GuestFactory.apply("confirmed")
+			.merge({ consentRefusedAt: DateTime.now() })
+			.create();
+		const message = (payload: Record<string, unknown>) =>
+			client.visit("inauguration.invitations.leif.message", { token: guest.token }).json(payload);
+		const tts = (text: string) =>
+			client.visit("inauguration.leif.tts").json({ token: guest.token, text });
+
+		const start = (await message({})).body() as Turn;
+		await message({ choice: "plus_one_add" });
+		const recap = (
+			await message({
+				plusOne: { firstName: "Visit", lastName: "evil.example", email: "buy@evil.example" },
+			})
+		).body() as Turn;
+
+		assert.equal(recap.step, "plus_one_confirm");
+		assert.include(recap.reply.text, "buy@evil.example");
+		assert.notInclude(recap.reply.spoken, "evil");
+		(await tts(recap.reply.text)).assertForbidden();
+		(await tts(start.reply.spoken)).assertForbidden();
+		(await tts(recap.reply.spoken)).assertOk();
+
+		const saved = (await message({ choice: "plus_one_confirm" })).body() as Turn;
+		assert.include(saved.reply.text, "Visit");
+		assert.notInclude(saved.reply.spoken, "Visit");
+	});
+
+	test("it should cap the audio size for guests", async ({ client }) => {
+		app.container.swap(LeifVoice, () => new FakeVoice());
+		const guest = await GuestFactory.create();
+		const staff = await UserFactory.create();
+		const audio = Buffer.alloc(1536 * 1024, 1);
+
+		const guestResponse = await client
+			.visit("inauguration.leif.stt")
+			.header("x-invitation-token", guest.token)
+			.file("audio", audio, { filename: "speech.webm", contentType: "audio/webm" });
+		guestResponse.assertUnprocessableEntity();
+		guestResponse.assertBodyContains({ code: "E_LEIF_AUDIO_INVALID" });
+
+		const staffResponse = await client
+			.visit("inauguration.leif.stt")
+			.loginAs(staff)
+			.file("audio", audio, { filename: "speech.webm", contentType: "audio/webm" });
+		staffResponse.assertOk();
 	});
 });

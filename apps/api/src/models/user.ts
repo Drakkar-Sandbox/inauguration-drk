@@ -9,4 +9,13 @@ const authFinder = withAuthFinder(() => hash.use("scrypt"), {
 	passwordColumnName: "password",
 });
 
-export default class User extends compose(UserSchema, authFinder) {}
+/**
+ * `admin`: Drakkar staff (back-office). `kiosk`: day-J screen devices, restricted to the
+ * kiosk and avatar routes.
+ */
+export const USER_ROLES = ["admin", "kiosk"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
+export default class User extends compose(UserSchema, authFinder) {
+	declare role: UserRole;
+}

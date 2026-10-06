@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 
 import GuestNotFoundException from "#exceptions/guest_not_found.exception";
+import type { GuestRef } from "#features/inauguration/kiosk/checkin/validators/guest_ref.validator";
 import Guest from "#models/guest";
 
 export default class CheckinService {
@@ -15,13 +16,21 @@ export default class CheckinService {
 	}
 
 	/**
+	 * Finds the guest designated by a scanned QR code or a guest id.
+	 */
+	findQuery(ref: GuestRef) {
+		const query = Guest.query();
+		if (ref.guestId !== undefined) query.where("id", ref.guestId);
+		else query.where("token", this.extractToken(ref.token ?? ""));
+
+		return query;
+	}
+
+	/**
 	 * Marks the guest as arrived. Idempotent: the first check-in time is kept.
 	 */
-	async checkin(input: string) {
-		const guest = await Guest.query()
-			.where("token", this.extractToken(input))
-			.preload("host")
-			.first();
+	async checkin(ref: GuestRef) {
+		const guest = await this.findQuery(ref).preload("host").first();
 		if (!guest) throw new GuestNotFoundException();
 
 		const alreadyCheckedIn = guest.checkedInAt !== null;

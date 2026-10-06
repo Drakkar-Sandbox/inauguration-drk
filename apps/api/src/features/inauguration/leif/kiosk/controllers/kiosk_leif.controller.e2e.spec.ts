@@ -31,6 +31,7 @@ type Turn = {
  */
 class FakeBrain extends ScriptedLeifBrain {
 	contexts: KioskContext[] = [];
+	reply = "Une piste : un assistant qui prépare vos chiffrages clients.";
 
 	constructor() {
 		super(new LeifLinesService(new EventService()));
@@ -38,7 +39,7 @@ class FakeBrain extends ScriptedLeifBrain {
 
 	async kioskReply(context: KioskContext): Promise<KioskReply> {
 		this.contexts.push(context);
-		return { text: "Une piste : un assistant pour vos devis clients.", offerHandoff: true };
+		return { text: this.reply, offerHandoff: true };
 	}
 
 	async summarizeKiosk(): Promise<ConversationSummary> {
@@ -221,5 +222,39 @@ test.group("Features / Inauguration / Leif / Kiosk / Controllers", (group) => {
 
 		response.assertNotFound();
 		response.assertBodyContains({ code: "E_GUEST_NOT_FOUND" });
+	});
+
+	test("it should replace AI replies that talk money or quote the angle notes", async ({
+		client,
+		assert,
+	}) => {
+		const staff = await UserFactory.create();
+		const guest = await GuestFactory.merge({
+			angleNotes: "Très intéressé par l'IA générative depuis le salon de mars.",
+		}).create();
+		const started = await client
+			.visit("inauguration.kiosk.leif.start_session")
+			.loginAs(staff)
+			.json({ guestId: guest.id });
+		const { sessionId } = started.body() as Turn;
+		const send = async (reply: string) => {
+			brain.reply = reply;
+			const response = await client
+				.visit("inauguration.kiosk.leif.message", { id: sessionId })
+				.loginAs(staff)
+				.json({ text: "Et donc ?" });
+			response.assertOk();
+			return response.body() as Turn;
+		};
+
+		const leak = await send("Vous êtes très intéressé par l'IA GENERATIVE depuis le salon !");
+		assert.notInclude(leak.reply.text.toLowerCase(), "salon");
+		assert.isTrue(leak.offerHandoff);
+
+		const price = await send("Comptez environ 15 k€ pour un prototype.");
+		assert.notInclude(price.reply.text, "€");
+
+		const fine = await send("Une piste : trier automatiquement vos demandes.");
+		assert.equal(fine.reply.text, "Une piste : trier automatiquement vos demandes.");
 	});
 });

@@ -2,6 +2,7 @@ import { inject } from "@adonisjs/core";
 import { HttpContext } from "@adonisjs/core/http";
 import vine from "@vinejs/vine";
 
+import { GuestRefSchema } from "#features/inauguration/kiosk/checkin/validators/guest_ref.validator";
 import KioskLeifPolicy from "#features/inauguration/leif/kiosk/policies/kiosk_leif.policy";
 import KioskLeifService from "#features/inauguration/leif/kiosk/services/kiosk_leif.service";
 import KioskGuestPresenter from "#presenters/kiosk_guest.presenter";
@@ -19,9 +20,9 @@ export default class KioskLeifGreetingController {
 	async handle({ request, bouncer }: HttpContext) {
 		await bouncer.with(KioskLeifPolicy).authorize("greeting");
 
-		const { token } = await request.validateUsing(KioskLeifGreetingController.payloadSchema);
+		const ref = await request.validateUsing(KioskLeifGreetingController.payloadSchema);
 
-		const { guest, text, speech } = await this.kioskLeifService.greeting(token);
+		const { guest, text, speech } = await this.kioskLeifService.greeting(ref);
 
 		return {
 			guest: this.kioskGuestPresenter.toJSON(guest),
@@ -30,7 +31,5 @@ export default class KioskLeifGreetingController {
 		};
 	}
 
-	static payloadSchema = vine.create({
-		token: vine.string().minLength(1).maxLength(2048),
-	});
+	static payloadSchema = vine.create(GuestRefSchema);
 }

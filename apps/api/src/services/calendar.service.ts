@@ -48,10 +48,13 @@ export default class CalendarService {
 		return date.toUTC().toFormat("yyyyMMdd'T'HHmmss'Z'");
 	}
 
+	/**
+	 * TEXT value escaping (RFC 5545 §3.3.11): backslash, semicolon, comma and newlines.
+	 */
 	#escape(value: string) {
 		return value
 			.replace(/\\/g, "\\\\")
-			.replace(/;/g, ";")
+			.replace(/;/g, "\\;")
 			.replace(/,/g, "\\,")
 			.replace(/\r?\n/g, "\\n");
 	}

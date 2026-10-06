@@ -12,7 +12,8 @@ export default class LeifSignupTurnPresenter {
 
 	toJSON(turn: SignupTurn) {
 		return {
-			reply: { text: turn.text },
+			// `text` is displayed; only `spoken` may be sent to TTS (no guest-typed values).
+			reply: { text: turn.text, spoken: turn.spoken },
 			step: turn.step,
 			choices: turn.choices,
 			form: turn.form,

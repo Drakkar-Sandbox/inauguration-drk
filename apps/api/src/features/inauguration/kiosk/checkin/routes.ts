@@ -8,6 +8,6 @@ router
 		router.post("/checkin", [controllers.features.inauguration.kiosk.checkin.Checkin]);
 		router.get("/guests/search", [controllers.features.inauguration.kiosk.checkin.Search]);
 	})
-	.use(middleware.auth({ guards: ["web"] }))
+	.use(middleware.auth({ guards: ["web"], roles: ["admin", "kiosk"] }))
 	.prefix("/kiosk")
 	.as("inauguration.kiosk");

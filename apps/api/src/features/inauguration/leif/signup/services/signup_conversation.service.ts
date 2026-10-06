@@ -4,10 +4,12 @@ import vine from "@vinejs/vine";
 import { DateTime } from "luxon";
 
 import eventConfig from "#config/event";
+import PlusOneChangeLimitException from "#features/inauguration/invitation/exceptions/plus_one_change_limit.exception";
 import PlusOneDeadlinePassedException from "#features/inauguration/invitation/exceptions/plus_one_deadline_passed.exception";
 import PlusOneNotAllowedException from "#features/inauguration/invitation/exceptions/plus_one_not_allowed.exception";
 import InvitationService from "#features/inauguration/invitation/services/invitation.service";
 import { LeifBrain, type SignupUnderstanding } from "#features/inauguration/leif/brain/leif_brain";
+import { isBlockedOutput } from "#features/inauguration/leif/brain/output_filter";
 import LeifLinesService from "#features/inauguration/leif/services/leif_lines.service";
 import LeifQuotaService from "#features/inauguration/leif/services/leif_quota.service";
 import Conversation, { type ConversationTranscriptEntry } from "#models/conversation";
@@ -34,7 +36,10 @@ export type SignupInput = {
 };
 
 export type SignupTurn = {
+	/** Displayed reply (may contain names/emails typed by the guest). */
 	text: string;
+	/** What may be voiced (TTS): scripted or filtered text only, never guest-typed values. */
+	spoken: string;
 	step: SignupStep;
 	choices: SignupChoice[];
 	/** Structured input the client can show instead of free text. */
@@ -52,7 +57,14 @@ type SignupState = {
 	infoDone: boolean;
 	pendingPlusOne: PendingPlusOne | null;
 	transcript: ConversationTranscriptEntry[];
+	/** `spoken` of the last turn: the only text a guest may send to TTS. */
+	lastSpoken: string | null;
 };
+
+/** A reply fragment: displayed text and its voiced version (null = not voiced). */
+type Line = { text: string; spoken: string | null };
+
+const say = (text: string, spoken: string | null = text): Line => ({ text, spoken });
 
 type Resolved = {
 	action: string;
@@ -63,6 +75,7 @@ type Resolved = {
 const MAX_TURNS_PER_DAY = 100;
 const STATE_TTL_SECONDS = 60 * 60 * 24;
 const MAX_TRANSCRIPT_ENTRIES = 200;
+const MAX_SPOKEN_ANSWER_LENGTH = 300;
 const LLM_HISTORY_ENTRIES = 8;
 
 const emailValidator = vine.create({ email: vine.string().email().maxLength(254) });
@@ -89,7 +102,7 @@ export default class SignupConversationService {
 		await this.quota.consume("signup", String(guest.id), MAX_TURNS_PER_DAY);
 
 		const isStart = !input.text && !input.choice && !input.plusOne;
-		const lines: string[] = [];
+		const lines: Line[] = [];
 		const previous = await this.#load(guest);
 		const state: SignupState = isStart || !previous ? this.#freshState(previous) : previous;
 
@@ -101,7 +114,12 @@ export default class SignupConversationService {
 		if (isStart) {
 			const returning =
 				previous !== null || guest.consentGivenAt !== null || guest.consentRefusedAt !== null;
-			lines.push(this.lines.signupWelcome(guest, returning));
+			lines.push(
+				say(
+					this.lines.signupWelcome(guest, returning),
+					this.lines.signupWelcome(guest, returning, true),
+				),
+			);
 		} else {
 			const previousStep = state.step;
 			this.#record(state, "guest", this.#describeInput(guest, state, input));
@@ -111,16 +129,22 @@ export default class SignupConversationService {
 			reprompt = outcome.reprompt && !(previousStep === "farewell" && state.step === "farewell");
 		}
 
-		if (reprompt) lines.push(this.#prompt(guest, state));
+		if (reprompt) lines.push(say(this.#prompt(guest, state), this.#prompt(guest, state, true)));
 		if (state.step === "practical_info") state.practicalShown = true;
 
-		const text = lines.join(" ");
+		const text = lines.map((line) => line.text).join(" ");
+		const spoken = lines
+			.map((line) => line.spoken)
+			.filter((line): line is string => Boolean(line))
+			.join(" ");
+		state.lastSpoken = spoken;
 		this.#record(state, "avatar", text);
 		await this.#save(guest, state);
 		await this.#persist(guest, state);
 
 		return {
 			text,
+			spoken,
 			step: state.step,
 			choices: this.#choices(guest, state),
 			form: state.step === "plus_one_details" ? "plus_one" : null,
@@ -130,23 +154,24 @@ export default class SignupConversationService {
 	}
 
 	/**
-	 * Whether Leif said exactly this line to the guest recently (guards public TTS).
+	 * Whether `text` is exactly the voiced part of the guest's last turn (guards public TTS).
 	 */
-	async hasSpoken(guest: Guest, text: string) {
+	async canVoice(guest: Guest, text: string) {
 		const state = await this.#load(guest);
 
-		return Boolean(
-			state?.transcript.some((entry) => entry.role === "avatar" && entry.text === text.trim()),
-		);
+		return Boolean(state?.lastSpoken && state.lastSpoken === text.trim());
 	}
 
 	async #advance(
 		guest: Guest,
 		state: SignupState,
 		input: SignupInput,
-	): Promise<{ guest: Guest; lines: string[]; reprompt: boolean }> {
+	): Promise<{ guest: Guest; lines: Line[]; reprompt: boolean }> {
 		const resolved = await this.#resolve(guest, state, input);
-		const lines: string[] = [];
+		const lines: Line[] = [];
+		// LLM-phrased answers are shown only if they pass the content filters, and voiced
+		// only if they are short as well.
+		const answer = this.#safeAnswer(resolved.understanding?.answer ?? null);
 		const next = (updated: Guest) => {
 			state.step = this.#nextStep(updated, state);
 			return { guest: updated, lines, reprompt: true };
@@ -157,12 +182,14 @@ export default class SignupConversationService {
 			case "consent_no": {
 				const given = resolved.action === "consent_yes";
 				const updated = await this.invitationService.consent(guest, given);
-				lines.push(given ? this.lines.consentGiven() : this.lines.consentRefused());
+				// Nothing said before a refusal may ever be persisted, even after a later consent.
+				if (!given) state.transcript = [];
+				lines.push(say(given ? this.lines.consentGiven() : this.lines.consentRefused()));
 				return next(updated);
 			}
 			case "confirm": {
 				const updated = await this.invitationService.respond(guest, "confirmed");
-				lines.push(this.lines.rsvpConfirmed());
+				lines.push(say(this.lines.rsvpConfirmed()));
 				return next(updated);
 			}
 			case "decline": {
@@ -186,7 +213,7 @@ export default class SignupConversationService {
 				const updated = await this.#managePlusOne(guest, lines, () =>
 					this.invitationService.deletePlusOne(guest),
 				);
-				if (!updated.plusOne) lines.push(this.lines.plusOneRemoved());
+				if (!updated.plusOne) lines.push(say(this.lines.plusOneRemoved()));
 				return next(updated);
 			}
 			case "plus_one_details":
@@ -210,7 +237,11 @@ export default class SignupConversationService {
 				const updated = await this.#managePlusOne(guest, lines, () =>
 					this.invitationService.upsertPlusOne(guest, payload),
 				);
-				if (updated.plusOne) lines.push(this.lines.plusOneSaved(payload.firstName));
+				if (updated.plusOne && lines.length === 0) {
+					lines.push(
+						say(this.lines.plusOneSaved(payload.firstName), this.lines.plusOneSavedSpoken()),
+					);
+				}
 				return next(updated);
 			}
 			case "done": {
@@ -220,24 +251,21 @@ export default class SignupConversationService {
 			}
 			case "faq": {
 				const index = resolved.understanding?.faqIndex ?? null;
-				lines.push(
-					resolved.understanding?.answer ??
-						(index !== null ? this.lines.faqAnswer(index) : null) ??
-						this.lines.notUnderstood(),
-				);
+				const scripted = index !== null ? this.lines.faqAnswer(index) : null;
+				lines.push(answer ?? say(scripted ?? this.lines.notUnderstood()));
 				return { guest, lines, reprompt: true };
 			}
 			case "off_topic":
-				lines.push(resolved.understanding?.answer ?? this.lines.offTopic());
+				lines.push(answer ?? say(this.lines.offTopic()));
 				return { guest, lines, reprompt: true };
 			default: {
 				if (resolved.action.startsWith("faq:")) {
-					const answer = this.lines.faqAnswer(Number(resolved.action.slice(4)));
-					lines.push(answer ?? this.lines.notUnderstood());
+					const faqAnswer = this.lines.faqAnswer(Number(resolved.action.slice(4)));
+					lines.push(say(faqAnswer ?? this.lines.notUnderstood()));
 					return { guest, lines, reprompt: true };
 				}
 
-				lines.push(resolved.understanding?.answer ?? this.lines.notUnderstood());
+				lines.push(answer ?? say(this.lines.notUnderstood()));
 				return { guest, lines, reprompt: true };
 			}
 		}
@@ -305,7 +333,7 @@ export default class SignupConversationService {
 	}
 
 	async #collectPlusOne(guest: Guest, state: SignupState, details: Partial<PendingPlusOne>) {
-		const lines: string[] = [];
+		const lines: Line[] = [];
 		const pending: PendingPlusOne = {
 			firstName: details.firstName?.trim() || state.pendingPlusOne?.firstName || null,
 			lastName: details.lastName?.trim() || state.pendingPlusOne?.lastName || null,
@@ -318,7 +346,7 @@ export default class SignupConversationService {
 				pending.email = null;
 				state.pendingPlusOne = pending;
 				state.step = "plus_one_details";
-				lines.push(this.lines.plusOneInvalidEmail());
+				lines.push(say(this.lines.plusOneInvalidEmail()));
 				return { guest, lines, reprompt: false };
 			}
 		}
@@ -332,7 +360,7 @@ export default class SignupConversationService {
 
 		if (missing.length > 0) {
 			state.step = "plus_one_details";
-			lines.push(this.lines.plusOneMissing(missing));
+			lines.push(say(this.lines.plusOneMissing(missing)));
 			return { guest, lines, reprompt: false };
 		}
 
@@ -343,7 +371,7 @@ export default class SignupConversationService {
 	/**
 	 * Plus-one changes can be refused by the invitation rules (deadline, guest status).
 	 */
-	async #managePlusOne(guest: Guest, lines: string[], action: () => Promise<Guest>) {
+	async #managePlusOne(guest: Guest, lines: Line[], action: () => Promise<Guest>) {
 		try {
 			return await action();
 		} catch (error) {
@@ -351,7 +379,11 @@ export default class SignupConversationService {
 				error instanceof PlusOneDeadlinePassedException ||
 				error instanceof PlusOneNotAllowedException
 			) {
-				lines.push(this.lines.plusOneClosed());
+				lines.push(say(this.lines.plusOneClosed()));
+				return guest;
+			}
+			if (error instanceof PlusOneChangeLimitException) {
+				lines.push(say(this.lines.plusOneLimit()));
 				return guest;
 			}
 			throw error;
@@ -371,17 +403,18 @@ export default class SignupConversationService {
 		return afterInfo;
 	}
 
-	#prompt(guest: Guest, state: SignupState) {
+	#prompt(guest: Guest, state: SignupState, voiced = false) {
 		switch (state.step) {
 			case "consent":
 				return this.lines.consentQuestion();
 			case "rsvp":
 				return this.lines.rsvpQuestion();
 			case "plus_one":
-				return this.lines.plusOneQuestion(guest);
+				return this.lines.plusOneQuestion(guest, voiced);
 			case "plus_one_details":
 				return this.lines.plusOneDetailsQuestion();
 			case "plus_one_confirm": {
+				if (voiced) return this.lines.plusOneConfirmSpoken();
 				const pending = state.pendingPlusOne;
 				return this.lines.plusOneConfirmQuestion({
 					firstName: pending?.firstName ?? "",
@@ -392,7 +425,7 @@ export default class SignupConversationService {
 			case "practical_info":
 				return state.practicalShown ? this.lines.anotherQuestion() : this.lines.practicalInfo();
 			case "farewell":
-				return this.lines.farewell(guest);
+				return this.lines.farewell(guest, voiced);
 		}
 	}
 
@@ -443,6 +476,15 @@ export default class SignupConversationService {
 		}
 	}
 
+	/**
+	 * Filters an LLM-phrased answer: dropped when it talks money, voiced only when short.
+	 */
+	#safeAnswer(answer: string | null): Line | null {
+		if (!answer || isBlockedOutput(answer)) return null;
+
+		return say(answer, answer.length <= MAX_SPOKEN_ANSWER_LENGTH ? answer : null);
+	}
+
 	#describeInput(guest: Guest, state: SignupState, input: SignupInput) {
 		if (input.text) return input.text;
 		if (input.plusOne) {
@@ -466,6 +508,7 @@ export default class SignupConversationService {
 			infoDone: false,
 			pendingPlusOne: null,
 			transcript: previous?.transcript ?? [],
+			lastSpoken: null,
 		};
 	}
 

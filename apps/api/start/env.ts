@@ -9,6 +9,7 @@ export default await Env.create(new URL("../", import.meta.url), {
 	APP_URL: Env.schema.string({ format: "url", tld: false }),
 	HOST: Env.schema.string({ format: "host" }),
 	LOG_LEVEL: Env.schema.string(),
+	TRUST_PROXY: Env.schema.string.optional(),
 
 	// Frontend Config
 	FRONTEND_URL: Env.schema.string({ format: "url", tld: app.inProduction }),

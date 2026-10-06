@@ -17,15 +17,23 @@ export default class LeifLinesService {
 		return eventConfig.avatarName;
 	}
 
-	signupWelcome(guest: Guest, returning: boolean) {
-		if (returning) return `Ravi de vous retrouver, ${guest.firstName}.`;
+	/**
+	 * A plus-one's name was typed by their host: it is shown, never voiced on the public site
+	 * (`voiced` variants only contain staff-entered or scripted text).
+	 */
+	#name(guest: Guest, voiced: boolean, prefix = " ") {
+		return voiced && guest.kind === "plus_one" ? "" : `${prefix}${guest.firstName}`;
+	}
+
+	signupWelcome(guest: Guest, returning: boolean, voiced = false) {
+		if (returning) return `Ravi de vous retrouver${this.#name(guest, voiced, ", ")}.`;
 
 		const info = this.eventService.publicInfo();
 		if (guest.kind === "plus_one" && guest.host) {
-			return `Bonjour ${guest.firstName}. Je suis ${this.avatarName}, l'hôte de la soirée « ${info.title} ». ${guest.host.firstName} ${guest.host.lastName} vous a convié : vous êtes attendu le ${info.dateLabel}.`;
+			return `Bonjour${this.#name(guest, voiced)}. Je suis ${this.avatarName}, l'hôte de la soirée « ${info.title} ». ${guest.host.firstName} ${guest.host.lastName} vous a convié : vous êtes attendu le ${info.dateLabel}.`;
 		}
 
-		return `Bonjour ${guest.firstName}. Je suis ${this.avatarName}, votre hôte pour la soirée « ${info.title} », le ${info.dateLabel}.`;
+		return `Bonjour${this.#name(guest, voiced)}. Je suis ${this.avatarName}, votre hôte pour la soirée « ${info.title} », le ${info.dateLabel}.`;
 	}
 
 	consentQuestion() {
@@ -50,8 +58,9 @@ export default class LeifLinesService {
 		return "Splendide, votre place est réservée.";
 	}
 
-	plusOneQuestion(guest: Guest) {
+	plusOneQuestion(guest: Guest, voiced = false) {
 		const plusOne = guest.plusOne;
+		if (plusOne && voiced) return "Vous venez accompagné. Souhaitez-vous changer quelque chose ?";
 		if (plusOne) {
 			return `Vous venez avec ${plusOne.firstName} ${plusOne.lastName}. Souhaitez-vous changer quelque chose ?`;
 		}
@@ -75,8 +84,21 @@ export default class LeifLinesService {
 		return `Je récapitule : ${plusOne.firstName} ${plusOne.lastName}, ${plusOne.email}. Est-ce exact ?`;
 	}
 
+	/** Voiced recap: never reads the names or email typed by the guest. */
+	plusOneConfirmSpoken() {
+		return "Je récapitule, est-ce bien exact ?";
+	}
+
 	plusOneSaved(firstName: string) {
 		return `C'est fait : ${firstName} recevra son invitation par email.`;
+	}
+
+	plusOneSavedSpoken() {
+		return "C'est fait : votre invité recevra son invitation par email.";
+	}
+
+	plusOneLimit() {
+		return `Vous avez déjà modifié votre accompagnant plusieurs fois : l'équipe ${eventConfig.organizer} se fera un plaisir de vous aider par email.`;
 	}
 
 	plusOneRemoved() {
@@ -101,12 +123,12 @@ export default class LeifLinesService {
 		return eventConfig.faq[index]?.answer ?? null;
 	}
 
-	farewell(guest: Guest) {
+	farewell(guest: Guest, voiced = false) {
 		if (guest.status === "declined") {
-			return `C'est noté, et c'est bien dommage. Si vos plans changent, cette page reste ouverte. Au plaisir, ${guest.firstName}.`;
+			return `C'est noté, et c'est bien dommage. Si vos plans changent, cette page reste ouverte. Au plaisir${this.#name(guest, voiced, ", ")}.`;
 		}
 
-		return `Votre QR code personnel vous attend sur cette page et dans vos emails : il vous ouvrira les portes. À très bientôt, ${guest.firstName}.`;
+		return `Votre QR code personnel vous attend sur cette page et dans vos emails : il vous ouvrira les portes. À très bientôt${this.#name(guest, voiced, ", ")}.`;
 	}
 
 	offTopic() {
@@ -151,6 +173,15 @@ export default class LeifLinesService {
 		const who = referentFirstName ?? "Un membre de l'équipe";
 
 		return `C'est transmis : ${who} vous rejoint très vite. Merci pour ce bel échange !`;
+	}
+
+	/**
+	 * Replaces an AI reply that touched money or the private angle sheet.
+	 */
+	kioskSafeLine(referentFirstName: string | null) {
+		const who = referentFirstName ?? "un membre de l'équipe";
+
+		return `Voilà une question à laquelle ${who} répondra bien mieux que moi. Voulez-vous que je vous mette en relation ?`;
 	}
 
 	kioskWaiting() {

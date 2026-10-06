@@ -253,4 +253,29 @@ test.group("Features / Inauguration / Leif / Signup / Controllers", (group) => {
 		response.assertNotFound();
 		response.assertBodyContains({ code: "E_GUEST_NOT_FOUND" });
 	});
+
+	test("it should never persist the turns said before a consent refusal", async ({
+		client,
+		assert,
+	}) => {
+		QueueManager.fake();
+		const guest = await GuestFactory.create();
+		const visit = () =>
+			client.visit("inauguration.invitations.leif.message", { token: guest.token });
+
+		const greeting = (await visit().json({})).body() as Body;
+		await visit().json({ choice: "consent_no" });
+		await client
+			.visit("inauguration.invitations.consent", { token: guest.token })
+			.json({ given: true });
+		await visit().json({ choice: "confirm" });
+
+		const conversation = await Conversation.query()
+			.where("guest_id", guest.id)
+			.where("channel", "signup")
+			.firstOrFail();
+		const texts = conversation.transcript!.map((entry) => entry.text);
+		assert.notInclude(texts, greeting.reply.text);
+		assert.notInclude(texts, "Je préfère que non");
+	});
 });

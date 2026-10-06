@@ -1,11 +1,13 @@
 import testUtils from "@adonisjs/core/services/test_utils";
 import { QueueManager } from "@adonisjs/queue";
 import { test } from "@japa/runner";
+import { DateTime } from "luxon";
 
 import eventConfig from "#config/event";
 import { GuestFactory } from "#database/factories/guest.factory";
 import SendInvitationConfirmation from "#features/inauguration/invitation/jobs/send_invitation_confirmation.job";
 import SendPlusOneInvitation from "#features/inauguration/invitation/jobs/send_plus_one_invitation.job";
+import Conversation from "#models/conversation";
 import Guest from "#models/guest";
 
 test.group("Features / Inauguration / Invitation / Controllers", (group) => {
@@ -247,5 +249,74 @@ test.group("Features / Inauguration / Invitation / Controllers", (group) => {
 
 		response.assertOk();
 		assert.equal(response.header("content-type"), "image/png");
+	});
+
+	test("it should not resend anything when the same plus-one is submitted again", async ({
+		client,
+		assert,
+	}) => {
+		const fakeQueueManager = QueueManager.fake();
+		const guest = await GuestFactory.apply("confirmed").create();
+		const visit = () =>
+			client.visit("inauguration.invitations.update_plus_one", { token: guest.token });
+
+		await visit().json({ firstName: "Ada", lastName: "Lovelace", email: "ada@example.com" });
+		const first = await Guest.findByOrFail("host_guest_id", guest.id);
+		const again = await visit().json({
+			firstName: " Ada ",
+			lastName: "Lovelace",
+			email: "ADA@example.com",
+		});
+
+		again.assertOk();
+		const current = await Guest.findByOrFail("host_guest_id", guest.id);
+		assert.equal(current.token, first.token);
+		fakeQueueManager.assertPushedCount(1);
+		await guest.refresh();
+		assert.equal(guest.plusOneChanges, 1);
+	});
+
+	test("it should cap the number of plus-one changes", async ({ client, assert }) => {
+		const fakeQueueManager = QueueManager.fake();
+		const guest = await GuestFactory.apply("confirmed").create();
+		const visit = (email: string) =>
+			client
+				.visit("inauguration.invitations.update_plus_one", { token: guest.token })
+				.json({ firstName: "Ada", lastName: "Lovelace", email });
+
+		for (const email of ["a@example.com", "b@example.com", "c@example.com"]) {
+			(await visit(email)).assertOk();
+		}
+		const response = await visit("d@example.com");
+
+		response.assertStatus(429);
+		response.assertBodyContains({ code: "E_PLUS_ONE_CHANGE_LIMIT" });
+		const plusOne = await Guest.findByOrFail("host_guest_id", guest.id);
+		assert.equal(plusOne.email, "c@example.com");
+		fakeQueueManager.assertPushedCount(3);
+	});
+
+	test("it should erase kept conversations when consent is withdrawn", async ({
+		client,
+		assert,
+	}) => {
+		const guest = await GuestFactory.merge({ consentGivenAt: DateTime.now() }).create();
+		const conversation = await Conversation.create({
+			guestId: guest.id,
+			channel: "kiosk",
+			startedAt: DateTime.now(),
+			endedAt: DateTime.now(),
+			transcript: [{ role: "guest", text: "Mon métier", at: new Date().toISOString() }],
+			summary: { need: "x", idea: "y", interestLevel: "high", notes: null },
+		});
+
+		const response = await client
+			.visit("inauguration.invitations.consent", { token: guest.token })
+			.json({ given: false });
+
+		response.assertOk();
+		await conversation.refresh();
+		assert.isNull(conversation.transcript);
+		assert.isNull(conversation.summary);
 	});
 });

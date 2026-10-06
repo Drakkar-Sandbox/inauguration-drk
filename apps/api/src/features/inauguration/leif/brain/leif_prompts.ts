@@ -3,10 +3,13 @@ import type { KioskContext } from "#features/inauguration/leif/brain/leif_brain"
 import type { ConversationTranscriptEntry } from "#models/conversation";
 
 /**
- * Guest text is data, never instructions: angle brackets are neutralized so it can
- * not close the delimiting tags.
+ * Guest-controlled text is data, never instructions: angle brackets are neutralized so it
+ * can not close the delimiting tags. Applied to every interpolated value, including
+ * avatar lines (they may quote names typed by a guest) and database fields.
  */
 export const escapeGuestText = (text: string) => text.replace(/</g, "‹").replace(/>/g, "›");
+
+const escapeOptional = (text: string | null) => (text === null ? null : escapeGuestText(text));
 
 const renderTranscript = (avatarName: string, transcript: ConversationTranscriptEntry[]) =>
 	transcript
@@ -14,7 +17,7 @@ const renderTranscript = (avatarName: string, transcript: ConversationTranscript
 		.map((entry) =>
 			entry.role === "guest"
 				? `<guest_message>${escapeGuestText(entry.text)}</guest_message>`
-				: `<avatar_message name="${avatarName}">${entry.text}</avatar_message>`,
+				: `<avatar_message name="${escapeGuestText(avatarName)}">${escapeGuestText(entry.text)}</avatar_message>`,
 		)
 		.join("\n");
 
@@ -73,11 +76,11 @@ export const signupUserPrompt = (input: {
 	question: string;
 	history: ConversationTranscriptEntry[];
 	text: string;
-}) => `Guest first name: ${input.guestFirstName}
+}) => `Guest first name: ${JSON.stringify(escapeGuestText(input.guestFirstName))}
 Recent conversation:
 ${renderTranscript(input.avatarName, input.history)}
 
-QUESTION currently asked by ${input.avatarName}: ${input.question}
+QUESTION currently asked by ${input.avatarName}: ${escapeGuestText(input.question)}
 
 Latest guest message:
 <guest_message>${escapeGuestText(input.text)}</guest_message>`;
@@ -94,9 +97,9 @@ EVENT: ${eventFacts(event)}`;
 
 export const kioskUserPrompt = (
 	context: KioskContext,
-) => `GUEST: ${JSON.stringify({ firstName: context.guest.firstName, company: context.guest.company })}
-REFERENT first name: ${context.referentFirstName ?? "(none: offer 'un membre de l'équipe')"}
-ANGLE (private): ${JSON.stringify({ topic: context.angleTopic, notes: context.angleNotes })}
+) => `GUEST: ${JSON.stringify({ firstName: escapeGuestText(context.guest.firstName), company: escapeOptional(context.guest.company) })}
+REFERENT first name: ${context.referentFirstName ? JSON.stringify(escapeGuestText(context.referentFirstName)) : "(none: offer 'un membre de l'équipe')"}
+ANGLE (private): ${JSON.stringify({ topic: escapeOptional(context.angleTopic), notes: escapeOptional(context.angleNotes) })}
 Handoff already requested: ${context.handoffRequested ? "yes" : "no"}
 
 Conversation so far:

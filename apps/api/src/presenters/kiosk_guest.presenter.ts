@@ -1,13 +1,13 @@
 import type Guest from "#models/guest";
 
 /**
- * Guest data displayed on day-J screens. Never includes angle sheet or conversation data.
+ * Guest data displayed on day-J screens. Never includes the invitation token,
+ * angle sheet or conversation data (manual check-in goes by guest id).
  */
 export default class KioskGuestPresenter {
 	toJSON(guest: Guest) {
 		return {
 			id: guest.id,
-			token: guest.token,
 			firstName: guest.firstName,
 			lastName: guest.lastName,
 			company: guest.company,

@@ -2,6 +2,7 @@ import { inject } from "@adonisjs/core";
 import { HttpContext } from "@adonisjs/core/http";
 import vine from "@vinejs/vine";
 
+import { GuestRefSchema } from "#features/inauguration/kiosk/checkin/validators/guest_ref.validator";
 import KioskLeifPolicy from "#features/inauguration/leif/kiosk/policies/kiosk_leif.policy";
 import KioskLeifService from "#features/inauguration/leif/kiosk/services/kiosk_leif.service";
 import LeifKioskTurnPresenter from "#presenters/leif_kiosk_turn.presenter";
@@ -19,14 +20,12 @@ export default class KioskLeifStartSessionController {
 	async handle({ request, bouncer }: HttpContext) {
 		await bouncer.with(KioskLeifPolicy).authorize("startSession");
 
-		const { token } = await request.validateUsing(KioskLeifStartSessionController.payloadSchema);
+		const ref = await request.validateUsing(KioskLeifStartSessionController.payloadSchema);
 
-		const turn = await this.kioskLeifService.start(token);
+		const turn = await this.kioskLeifService.start(ref);
 
 		return this.leifKioskTurnPresenter.toJSON(turn);
 	}
 
-	static payloadSchema = vine.create({
-		token: vine.string().minLength(1).maxLength(2048),
-	});
+	static payloadSchema = vine.create(GuestRefSchema);
 }
