@@ -1,0 +1,14 @@
+<mj-text font-size="14px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[12]["light"] }}" line-height="1.6">
+    <strong>Date</strong> : {{ event.dateLabel }}, {{ event.timeLabel }}<br />
+    <strong>Adresse</strong> : {{ event.address.label }} — {{ event.address.full }}<br />
+    <strong>Accès</strong> : {{ event.access }}<br />
+    <strong>Stationnement</strong> : {{ event.parking }}<br />
+    <strong>Tenue</strong> : {{ event.dressCode }}
+</mj-text>
+
+<mj-text font-size="14px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[12]["light"] }}" line-height="1.6">
+    <strong>Programme</strong><br />
+    @each(item in event.programme)
+        {{ item.time }} — {{ item.label }}<br />
+    @end
+</mj-text>

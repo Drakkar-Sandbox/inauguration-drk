@@ -7,6 +7,29 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class ConversationSchema extends BaseModel {
+  static $columns = ['channel', 'createdAt', 'endedAt', 'guestId', 'id', 'startedAt', 'summary', 'transcript', 'updatedAt'] as const
+  $columns = ConversationSchema.$columns
+  @column()
+  declare channel: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.dateTime()
+  declare endedAt: DateTime | null
+  @column()
+  declare guestId: number
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime()
+  declare startedAt: DateTime
+  @column()
+  declare summary: any | null
+  @column()
+  declare transcript: any | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+}
+
 export class FileSchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'key', 'name', 'size', 'type', 'updatedAt'] as const
   $columns = FileSchema.$columns
@@ -22,6 +45,70 @@ export class FileSchema extends BaseModel {
   declare size: number
   @column()
   declare type: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+}
+
+export class GuestSchema extends BaseModel {
+  static $columns = ['angleNotes', 'angleTopic', 'checkedInAt', 'company', 'consentGivenAt', 'consentRefusedAt', 'createdAt', 'email', 'firstName', 'hostGuestId', 'id', 'kind', 'lastName', 'meetingStatus', 'referentUserId', 'respondedAt', 'status', 'token', 'updatedAt'] as const
+  $columns = GuestSchema.$columns
+  @column()
+  declare angleNotes: string | null
+  @column()
+  declare angleTopic: string | null
+  @column.dateTime()
+  declare checkedInAt: DateTime | null
+  @column()
+  declare company: string | null
+  @column.dateTime()
+  declare consentGivenAt: DateTime | null
+  @column.dateTime()
+  declare consentRefusedAt: DateTime | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string | null
+  @column()
+  declare firstName: string
+  @column()
+  declare hostGuestId: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare kind: string
+  @column()
+  declare lastName: string
+  @column()
+  declare meetingStatus: string
+  @column()
+  declare referentUserId: number | null
+  @column.dateTime()
+  declare respondedAt: DateTime | null
+  @column()
+  declare status: string
+  @column()
+  declare token: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+}
+
+export class HandoffSchema extends BaseModel {
+  static $columns = ['conversationId', 'createdAt', 'guestId', 'id', 'reason', 'referentUserId', 'status', 'updatedAt'] as const
+  $columns = HandoffSchema.$columns
+  @column()
+  declare conversationId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare guestId: number
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare reason: string
+  @column()
+  declare referentUserId: number | null
+  @column()
+  declare status: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }

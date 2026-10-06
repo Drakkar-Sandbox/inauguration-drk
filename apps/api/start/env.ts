@@ -13,6 +13,9 @@ export default await Env.create(new URL("../", import.meta.url), {
 	// Frontend Config
 	FRONTEND_URL: Env.schema.string({ format: "url", tld: app.inProduction }),
 
+	// Event Config
+	EVENT_AVATAR_NAME: Env.schema.string.optional(),
+
 	// Cookie Config
 	COOKIE_DOMAIN: Env.schema.string.optionalWhen(process.env.NODE_ENV !== "production"),
 

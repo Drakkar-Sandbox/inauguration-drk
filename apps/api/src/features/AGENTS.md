@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-Feature-first HTTP modules for the API. Current domain: `user_management`; keep this file as domain-boundary guidance only.
+Feature-first HTTP modules for the API. Domains: `web` (account management) and `inauguration` (event invitations, back-office, kiosk — see `inauguration/AGENTS.md`); keep this file as domain-boundary guidance only.
 
 ## WHERE TO LOOK
 
@@ -13,6 +13,7 @@ Feature-first HTTP modules for the API. Current domain: `user_management`; keep 
 | Cross-feature validators | `../validators/user.validator.ts` | Shared by profile/password controllers. |
 | Auth middleware registry | `apps/api/start/kernel.ts` | Named `auth` / `guest` middleware comes from this tree. |
 | Feature docs | `user_management/*/AGENTS.md` | Concrete feature rules live below the domain. |
+| Inauguration domain | `inauguration/routes.ts`, `inauguration/AGENTS.md` | Public invitations, back-office, kiosk. |
 
 ## CONVENTIONS
 

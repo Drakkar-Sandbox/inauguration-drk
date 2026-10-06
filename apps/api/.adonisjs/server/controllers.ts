@@ -5,6 +5,57 @@
 
 export const controllers = {
   features: {
+    inauguration: {
+      backoffice: {
+        conversations: {
+          List: () => import('#src/features/inauguration/backoffice/conversations/controllers/list.controller'),
+          View: () => import('#src/features/inauguration/backoffice/conversations/controllers/view.controller'),
+        },
+        dashboard: {
+          View: () => import('#src/features/inauguration/backoffice/dashboard/controllers/view.controller'),
+        },
+        guests: {
+          Create: () => import('#src/features/inauguration/backoffice/guests/controllers/create.controller'),
+          Delete: () => import('#src/features/inauguration/backoffice/guests/controllers/delete.controller'),
+          Export: () => import('#src/features/inauguration/backoffice/guests/controllers/export.controller'),
+          Import: () => import('#src/features/inauguration/backoffice/guests/controllers/import.controller'),
+          List: () => import('#src/features/inauguration/backoffice/guests/controllers/list.controller'),
+          QrPng: () => import('#src/features/inauguration/backoffice/guests/controllers/qr_png.controller'),
+          QrSheet: () => import('#src/features/inauguration/backoffice/guests/controllers/qr_sheet.controller'),
+          QrSvg: () => import('#src/features/inauguration/backoffice/guests/controllers/qr_svg.controller'),
+          Update: () => import('#src/features/inauguration/backoffice/guests/controllers/update.controller'),
+          View: () => import('#src/features/inauguration/backoffice/guests/controllers/view.controller'),
+        },
+        handoffs: {
+          List: () => import('#src/features/inauguration/backoffice/handoffs/controllers/list.controller'),
+          Update: () => import('#src/features/inauguration/backoffice/handoffs/controllers/update.controller'),
+        },
+        staff: {
+          List: () => import('#src/features/inauguration/backoffice/staff/controllers/list.controller'),
+        },
+      },
+      invitation: {
+        Calendar: () => import('#src/features/inauguration/invitation/controllers/calendar.controller'),
+        Consent: () => import('#src/features/inauguration/invitation/controllers/consent.controller'),
+        DeletePlusOne: () => import('#src/features/inauguration/invitation/controllers/delete_plus_one.controller'),
+        QrCode: () => import('#src/features/inauguration/invitation/controllers/qr_code.controller'),
+        Respond: () => import('#src/features/inauguration/invitation/controllers/respond.controller'),
+        UpdatePlusOne: () => import('#src/features/inauguration/invitation/controllers/update_plus_one.controller'),
+        View: () => import('#src/features/inauguration/invitation/controllers/view.controller'),
+      },
+      kiosk: {
+        checkin: {
+          Checkin: () => import('#src/features/inauguration/kiosk/checkin/controllers/checkin.controller'),
+          Search: () => import('#src/features/inauguration/kiosk/checkin/controllers/search.controller'),
+        },
+        speech: {
+          Cues: () => import('#src/features/inauguration/kiosk/speech/controllers/cues.controller'),
+          Current: () => import('#src/features/inauguration/kiosk/speech/controllers/current.controller'),
+          Reset: () => import('#src/features/inauguration/kiosk/speech/controllers/reset.controller'),
+          Trigger: () => import('#src/features/inauguration/kiosk/speech/controllers/trigger.controller'),
+        },
+      },
+    },
     web: {
       accountManagement: {
         authentication: {

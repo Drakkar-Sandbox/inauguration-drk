@@ -4,7 +4,17 @@
 */
 /// <reference path="./manifest.d.ts" />
 
+export type Conversation = Awaited<ReturnType<typeof import("#presenters/conversation.presenter").default.prototype.toJSON>>;
+
 export type File = Awaited<ReturnType<typeof import("#presenters/file.presenter").default.prototype.toJSON>>;
+
+export type Guest = Awaited<ReturnType<typeof import("#presenters/guest.presenter").default.prototype.toJSON>>;
+
+export type Handoff = Awaited<ReturnType<typeof import("#presenters/handoff.presenter").default.prototype.toJSON>>;
+
+export type Invitation = Awaited<ReturnType<typeof import("#presenters/invitation.presenter").default.prototype.toJSON>>;
+
+export type KioskGuest = Awaited<ReturnType<typeof import("#presenters/kiosk_guest.presenter").default.prototype.toJSON>>;
 
 export type Pagination = Awaited<ReturnType<typeof import("#presenters/pagination.presenter").default.prototype.toJSON>>;
 

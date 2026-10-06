@@ -1,0 +1,47 @@
+@layout.email()
+    @slot("header")
+        <mj-text font-size="32px" font-family="{{ fonts.serif }}" align="center" color="{{ colors.primary[11]["light"] }}" padding="0">
+            Vous êtes attendu(e)
+        </mj-text>
+    @end
+
+    @slot("content")
+        <mj-text font-size="14px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[12]["light"] }}" line-height="1.5">
+            Bonjour <strong>{{ guest.firstName }}</strong>,
+        </mj-text>
+
+        <mj-text font-size="14px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[12]["light"] }}" line-height="1.5">
+            <strong>{{ host.firstName }} {{ host.lastName }}</strong> vous convie à l'<strong>{{ event.title }}</strong>. Nous serons ravis de vous y accueillir.
+        </mj-text>
+
+        @!component("components/email/event_info", { event })
+
+        <mj-text font-size="14px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[12]["light"] }}" line-height="1.5">
+            Voici votre QR code personnel, à présenter à votre arrivée.
+        </mj-text>
+
+        <mj-image src="cid:qrcode" alt="Votre QR code d'accès" width="200px" />
+
+        @!component("components/email/button", {
+            url: invitationUrl,
+            text: "Voir mon invitation"
+        })
+
+        <mj-spacer />
+
+        <mj-text font-size="14px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[12]["light"] }}" line-height="1.5">
+            L'événement est joint à ce message pour l'ajouter à votre agenda.
+        </mj-text>
+
+        <mj-text font-size="14px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[12]["light"] }}" line-height="1.5">
+            Au plaisir de vous rencontrer,<br />
+            <strong>{{ event.avatarName }}</strong>, pour {{ event.organizer }}
+        </mj-text>
+    @end
+
+    @slot("footer")
+        <mj-text font-size="12px" font-family="{{ fonts.sans }}" color="{{ colors.neutral[11]["light"] }}" line-height="1.5">
+            Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur : <a href="{{ invitationUrl }}" style="color: {{ colors.primary[9]["light"] }};">{{ invitationUrl }}</a>
+        </mj-text>
+    @end
+@end
