@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 
+import { extractInvitationToken } from "#/features/inauguration/kiosk/utils/scan";
+
 /** USB scanners type a whole code in a few milliseconds; humans do not. */
 const MAX_KEY_GAP_MS = 80;
 const MIN_CODE_LENGTH = 8;
@@ -40,10 +42,10 @@ export function useScannerInput(params: UseScannerInputParams) {
 			if (event.key === "Enter") {
 				const code = buffer.trim();
 				buffer = "";
-				if (code.length >= MIN_CODE_LENGTH) {
-					event.preventDefault();
-					onScan.current(code);
-				}
+				if (code.length < MIN_CODE_LENGTH) return;
+				event.preventDefault();
+				// Unrecognisable codes still go through: the screen answers with a generic welcome.
+				onScan.current(extractInvitationToken(code) ?? code);
 				return;
 			}
 			if (event.key.length === 1) buffer += event.key;

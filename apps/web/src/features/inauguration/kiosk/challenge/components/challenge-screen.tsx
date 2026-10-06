@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 import { cn } from "tailwind-variants";
 
 import { DrakkarLogo } from "@workspace/ui-react/components/drakkar-logo";
-import { LeifAvatar } from "@workspace/ui-react/components/leif-avatar";
-import { LeifSubtitles } from "@workspace/ui-react/components/leif-subtitles";
 import { PushToTalkButton } from "@workspace/ui-react/components/push-to-talk-button";
 import {
 	BellRingIcon,
@@ -23,6 +21,10 @@ import { CameraScanner } from "#/features/inauguration/kiosk/components/camera-s
 import { ScanFrame } from "#/features/inauguration/kiosk/components/scan-frame";
 import { useCameraPreference } from "#/features/inauguration/kiosk/hooks/use-camera-preference";
 import { useScannerInput } from "#/features/inauguration/kiosk/hooks/use-scanner-input";
+import {
+	LiveLeifAvatar,
+	LiveLeifSubtitles,
+} from "#/features/inauguration/leif/components/live-leif";
 import { StageBackdrop } from "#/features/inauguration/leif/components/stage-backdrop";
 import { KIOSK_AVATAR_NAME, LEIF_FULLBODY_SRC } from "#/features/inauguration/leif/constants";
 
@@ -45,7 +47,7 @@ export function ChallengeScreen() {
 
 	return (
 		<div className="relative grid size-full grid-rows-[auto_1fr_auto] overflow-hidden">
-			<StageBackdrop spotlight="left" intensity={dimmed ? 0 : voice.mouthOpenness} />
+			<StageBackdrop spotlight="left" frame={voice.frame} muted={dimmed} />
 			<AudioUnlockGate />
 
 			<header className="relative z-10 flex items-center justify-between gap-6 px-[5vmin] pt-[4.5vmin]">
@@ -81,10 +83,10 @@ export function ChallengeScreen() {
 							dimmed && "opacity-40",
 						)}
 					>
-						<LeifAvatar
+						<LiveLeifAvatar
 							name={name}
 							state={dimmed ? "idle" : state}
-							mouthOpenness={voice.mouthOpenness}
+							frame={voice.frame}
 							framing="fullbody"
 							size="fill"
 							imageSrc={LEIF_FULLBODY_SRC}
@@ -229,11 +231,11 @@ function PhaseContent(props: PhaseContentProps) {
 					</p>
 				)}
 				{voice.line && (
-					<LeifSubtitles
+					<LiveLeifSubtitles
 						key={voice.line.id}
 						text={voice.line.text}
 						alignment={voice.line.words}
-						currentTimeMs={voice.currentTimeMs}
+						frame={voice.frame}
 						speaker={name}
 						align="start"
 						className={cn(

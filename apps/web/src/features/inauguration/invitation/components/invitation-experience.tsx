@@ -22,6 +22,7 @@ import { useDarkDocument } from "#/features/inauguration/leif/hooks/use-dark-doc
 import type { Invitation } from "#/features/inauguration/leif/types";
 import { errorStatus } from "#/features/inauguration/leif/utils/api";
 import { unlockAudio } from "#/features/inauguration/leif/utils/audio";
+import type { VoiceFrameStore } from "#/features/inauguration/leif/utils/frame-store";
 
 type Phase = "intro" | "conversation" | "farewell" | "form";
 
@@ -65,13 +66,21 @@ function InvitationJourney(props: { token: string; invitation: Invitation }) {
 	const conversation = useSignupConversation({ token, muted });
 	const { turn, voice } = conversation;
 
-	// Once Leif has said goodbye, the farewell screen takes over.
+	// Once Leif has said goodbye, the farewell screen takes over — unless the guest came back
+	// from it on purpose (that goodbye turn is then dismissed).
+	const [dismissedTurn, setDismissedTurn] = useState<typeof turn>(null);
 	useEffect(() => {
-		if (phase === "conversation" && turn?.done && !voice.speaking && !voice.preparing) {
+		if (
+			phase === "conversation" &&
+			turn?.done &&
+			turn !== dismissedTurn &&
+			!voice.speaking &&
+			!voice.preparing
+		) {
 			const timeout = setTimeout(() => setPhase("farewell"), 900);
 			return () => clearTimeout(timeout);
 		}
-	}, [phase, turn, voice.speaking, voice.preparing]);
+	}, [phase, turn, dismissedTurn, voice.speaking, voice.preparing]);
 
 	const enter = (withSound: boolean) => {
 		setMuted(!withSound);
@@ -92,7 +101,7 @@ function InvitationJourney(props: { token: string; invitation: Invitation }) {
 	const showCardPanel = phase === "conversation";
 
 	return (
-		<Stage intensity={phase === "conversation" ? voice.mouthOpenness : 0}>
+		<Stage frame={phase === "conversation" ? voice.frame : undefined}>
 			<header className="relative z-10 flex items-center justify-between gap-4 px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-10">
 				<DrakkarLogo size="sm" tone="paper" />
 				{phase !== "intro" && (
@@ -134,7 +143,10 @@ function InvitationJourney(props: { token: string; invitation: Invitation }) {
 						<InvitationFarewell
 							token={token}
 							invitation={invitation}
-							onContinue={() => setPhase("conversation")}
+							onContinue={() => {
+								setDismissedTurn(turn);
+								setPhase("conversation");
+							}}
 							onAnswerWithoutLeif={openForm}
 						/>
 					)}
@@ -143,8 +155,10 @@ function InvitationJourney(props: { token: string; invitation: Invitation }) {
 							token={token}
 							invitation={invitation}
 							onBack={() => {
+								// Answers may have changed in the form: Leif picks up from the new state.
+								setDismissedTurn(turn);
 								setPhase("conversation");
-								if (!turn) void conversation.start();
+								void conversation.start();
 							}}
 						/>
 					)}
@@ -160,10 +174,10 @@ function InvitationJourney(props: { token: string; invitation: Invitation }) {
 	);
 }
 
-function Stage(props: { children: React.ReactNode; intensity?: number }) {
+function Stage(props: { children: React.ReactNode; frame?: VoiceFrameStore }) {
 	return (
 		<div className="relative flex h-dvh flex-col overflow-hidden bg-neutral-1 text-neutral-12">
-			<StageBackdrop spotlight="top" intensity={props.intensity} />
+			<StageBackdrop spotlight="top" frame={props.frame} />
 			{props.children}
 		</div>
 	);

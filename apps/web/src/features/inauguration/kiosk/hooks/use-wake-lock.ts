@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 
 /**
- * Keeps kiosk screens awake. The lock is released by the browser whenever the tab is hidden,
- * so it is requested again each time the page becomes visible.
+ * Keeps kiosk screens awake. The browser releases the lock whenever the tab is hidden (and
+ * sometimes on its own, e.g. power-saving): it is requested again on every release while the
+ * page is visible, and on every return to visibility.
  */
 export function useWakeLock() {
 	useEffect(() => {
@@ -10,13 +11,25 @@ export function useWakeLock() {
 
 		let sentinel: WakeLockSentinel | null = null;
 		let disposed = false;
+		let requesting = false;
+
 		const request = async () => {
-			if (document.visibilityState !== "visible") return;
+			if (disposed || requesting || document.visibilityState !== "visible") return;
+			if (sentinel && !sentinel.released) return;
+			requesting = true;
 			try {
+				const previous = sentinel;
 				sentinel = await navigator.wakeLock.request("screen");
-				if (disposed) await sentinel.release();
+				void previous?.release().catch(() => undefined);
+				if (disposed) {
+					await sentinel.release();
+					return;
+				}
+				sentinel.addEventListener("release", () => void request());
 			} catch {
 				// Denied (battery saver, permissions policy): the screen settings take over.
+			} finally {
+				requesting = false;
 			}
 		};
 		const handleVisibility = () => void request();

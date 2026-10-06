@@ -10,6 +10,7 @@ import {
 	synthesizeSpeech,
 	transcribeSpeech,
 } from "#/features/inauguration/leif/utils/api";
+import { unlockAudio } from "#/features/inauguration/leif/utils/audio";
 import { inauguration } from "#/libs/tuyau";
 
 const INACTIVITY_MS = 90_000;
@@ -18,6 +19,8 @@ const THANKS_MS = 8_000;
 const RESTING_MS = 10_000;
 /** Only show Leif thinking when the answer is slow, never for a quick reply. */
 const THINKING_DELAY_MS = 1_500;
+const REQUEST_TIMEOUT_MS = 25_000;
+const STAFF_SYNTHESIS_TIMEOUT_MS = 20_000;
 
 export type ChallengePhase = "idle" | "starting" | "session" | "thanks" | "resting";
 
@@ -41,17 +44,27 @@ export function useChallengeSession() {
 	sessionRef.current = session;
 	const lastActivity = useRef(0);
 	const phaseTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+	/**
+	 * Bumped whenever a session starts or ends: replies to requests made in an older epoch (slow
+	 * answer arriving after « Terminer », the resting screen or a new guest) are dropped.
+	 */
+	const epoch = useRef(0);
 
-	const voice = useLeifVoice({ synthesize: (text) => synthesizeSpeech(text) });
+	const voice = useLeifVoice({
+		synthesize: (text) => synthesizeSpeech(text, undefined, STAFF_SYNTHESIS_TIMEOUT_MS),
+		synthesisTimeoutMs: STAFF_SYNTHESIS_TIMEOUT_MS,
+	});
 
 	const { mutateAsync: startSession } = useMutation(
-		inauguration.kiosk.leif.startSession.mutationOptions(),
+		inauguration.kiosk.leif.startSession.mutationOptions({
+			tuyau: { timeout: REQUEST_TIMEOUT_MS },
+		}),
 	);
 	const { mutateAsync: sendMessage, isPending: isSending } = useMutation(
-		inauguration.kiosk.leif.message.mutationOptions(),
+		inauguration.kiosk.leif.message.mutationOptions({ tuyau: { timeout: REQUEST_TIMEOUT_MS } }),
 	);
 	const { mutateAsync: requestHandoff, isPending: isHandingOff } = useMutation(
-		inauguration.kiosk.leif.handoff.mutationOptions(),
+		inauguration.kiosk.leif.handoff.mutationOptions({ tuyau: { timeout: REQUEST_TIMEOUT_MS } }),
 	);
 	const { mutateAsync: endSession } = useMutation(
 		inauguration.kiosk.leif.endSession.mutationOptions(),
@@ -86,6 +99,7 @@ export function useChallengeSession() {
 	}, [endSession]);
 
 	const rest = useCallback(() => {
+		epoch.current++;
 		voice.stop();
 		setPhase("resting");
 		void closeSession();
@@ -94,6 +108,7 @@ export function useChallengeSession() {
 
 	const finish = useCallback(async () => {
 		if (!sessionRef.current) return;
+		epoch.current++;
 		voice.stop();
 		setPhase("thanks");
 		await closeSession();
@@ -101,7 +116,8 @@ export function useChallengeSession() {
 	}, [backToIdleAfter, closeSession, voice.stop]);
 
 	const applyTurn = useCallback(
-		async (turn: KioskTurn) => {
+		async (turn: KioskTurn, requestEpoch: number) => {
+			if (requestEpoch !== epoch.current) return;
 			setSession({
 				sessionId: turn.sessionId,
 				guest: turn.guest,
@@ -110,7 +126,7 @@ export function useChallengeSession() {
 				referentFirstName: turn.referentFirstName,
 			});
 			await voice.speak(turn.reply.text);
-			touch();
+			if (requestEpoch === epoch.current) touch();
 		},
 		[touch, voice.speak],
 	);
@@ -119,15 +135,17 @@ export function useChallengeSession() {
 		async (token: string) => {
 			if (phase !== "idle") return;
 			clearTimeout(phaseTimer.current);
+			const requestEpoch = ++epoch.current;
 			setPhase("starting");
 			setGuestLine(null);
 			touch();
 			try {
 				const turn = await startSession({ body: { token } });
+				if (requestEpoch !== epoch.current) return;
 				setPhase("session");
-				await applyTurn(turn);
+				await applyTurn(turn, requestEpoch);
 			} catch {
-				rest();
+				if (requestEpoch === epoch.current) rest();
 			}
 		},
 		[applyTurn, phase, rest, startSession, touch],
@@ -137,12 +155,18 @@ export function useChallengeSession() {
 		async (text: string) => {
 			const current = sessionRef.current;
 			if (!current) return;
+			const requestEpoch = epoch.current;
 			voice.stop();
 			setGuestLine(text);
 			touch();
 			try {
-				await applyTurn(await sendMessage({ params: { id: current.sessionId }, body: { text } }));
+				const turn = await sendMessage({
+					params: { id: current.sessionId },
+					body: { text },
+				});
+				await applyTurn(turn, requestEpoch);
 			} catch (error) {
+				if (requestEpoch !== epoch.current) return;
 				// Turn limit reached: a graceful goodbye rather than an outage.
 				if (errorStatus(error) === 429) void finish();
 				else rest();
@@ -154,12 +178,16 @@ export function useChallengeSession() {
 	const handoff = useCallback(async () => {
 		const current = sessionRef.current;
 		if (!current) return;
+		const requestEpoch = epoch.current;
 		voice.stop();
 		touch();
 		try {
-			await applyTurn(await requestHandoff({ params: { id: current.sessionId } }));
+			const turn = await requestHandoff({
+				params: { id: current.sessionId },
+			});
+			await applyTurn(turn, requestEpoch);
 		} catch {
-			rest();
+			if (requestEpoch === epoch.current) rest();
 		}
 	}, [applyTurn, requestHandoff, rest, touch, voice.stop]);
 
@@ -211,6 +239,7 @@ export function useChallengeSession() {
 		ptt: {
 			...ptt,
 			start: () => {
+				void unlockAudio();
 				voice.stop();
 				return ptt.start();
 			},

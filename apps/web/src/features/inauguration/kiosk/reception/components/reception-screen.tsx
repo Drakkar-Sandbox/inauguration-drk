@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 import { cn } from "tailwind-variants";
 
 import { DrakkarLogo } from "@workspace/ui-react/components/drakkar-logo";
-import { LeifAvatar } from "@workspace/ui-react/components/leif-avatar";
-import { LeifSubtitles } from "@workspace/ui-react/components/leif-subtitles";
 import { CameraIcon, CameraOffIcon } from "@workspace/ui-react/icons";
 
 import { AudioUnlockGate } from "#/features/inauguration/kiosk/components/audio-unlock-gate";
@@ -14,6 +12,10 @@ import { ScanFrame } from "#/features/inauguration/kiosk/components/scan-frame";
 import { useCameraPreference } from "#/features/inauguration/kiosk/hooks/use-camera-preference";
 import { useScannerInput } from "#/features/inauguration/kiosk/hooks/use-scanner-input";
 import { useReception } from "#/features/inauguration/kiosk/reception/hooks/use-reception";
+import {
+	LiveLeifAvatar,
+	LiveLeifSubtitles,
+} from "#/features/inauguration/leif/components/live-leif";
 import { StageBackdrop } from "#/features/inauguration/leif/components/stage-backdrop";
 import { KIOSK_AVATAR_NAME, LEIF_FULLBODY_SRC } from "#/features/inauguration/leif/constants";
 
@@ -37,7 +39,7 @@ export function ReceptionScreen() {
 
 	return (
 		<div className="relative grid size-full grid-rows-[auto_1fr] overflow-hidden">
-			<StageBackdrop spotlight="center" intensity={voice.mouthOpenness} />
+			<StageBackdrop spotlight="center" frame={voice.frame} />
 			<AudioUnlockGate />
 
 			<header className="relative z-10 flex items-center justify-between px-[5vmin] pt-[5vmin]">
@@ -50,10 +52,10 @@ export function ReceptionScreen() {
 			<main className="relative z-10 grid min-h-0 portrait:grid-rows-[1fr_auto] landscape:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
 				<div className="relative flex min-h-0 items-end justify-center portrait:pt-[2vmin] landscape:pb-[4vmin]">
 					<div className="aspect-9/16 h-full max-w-full">
-						<LeifAvatar
+						<LiveLeifAvatar
 							name={KIOSK_AVATAR_NAME}
 							state={state}
-							mouthOpenness={voice.mouthOpenness}
+							frame={voice.frame}
 							framing="fullbody"
 							size="fill"
 							imageSrc={LEIF_FULLBODY_SRC}
@@ -98,11 +100,11 @@ export function ReceptionScreen() {
 
 					<div className="min-h-[14vmin] portrait:mx-auto">
 						{welcoming && voice.line && (
-							<LeifSubtitles
+							<LiveLeifSubtitles
 								key={voice.line.id}
 								text={voice.line.text}
 								alignment={voice.line.words}
-								currentTimeMs={voice.currentTimeMs}
+								frame={voice.frame}
 								align="start"
 								size="lg"
 								className="max-w-none animate-rise motion-reduce:animate-none portrait:items-center portrait:text-center [&>p]:text-[3.2vmin] [&>p]:leading-snug"

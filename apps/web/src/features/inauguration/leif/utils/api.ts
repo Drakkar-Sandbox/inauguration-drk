@@ -10,10 +10,11 @@ import { client } from "#/libs/tuyau";
 export async function synthesizeSpeech(
 	text: string,
 	invitationToken?: string,
+	timeoutMs = 15_000,
 ): Promise<SynthesizedSpeech | null> {
 	const response = await client.request("inauguration.leif.tts", {
 		body: { text, token: invitationToken },
-		timeout: 15_000,
+		timeout: timeoutMs,
 	});
 
 	if (!response.audioBase64 || !response.alignment) return null;

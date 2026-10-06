@@ -3,19 +3,21 @@ import { useTranslation } from "react-i18next";
 import { cn } from "tailwind-variants";
 
 import { ChoiceChips } from "@workspace/ui-react/components/choice-chips";
-import { LeifAvatar } from "@workspace/ui-react/components/leif-avatar";
-import { LeifSubtitles } from "@workspace/ui-react/components/leif-subtitles";
 import { PushToTalkButton } from "@workspace/ui-react/components/push-to-talk-button";
 import { ArrowUpIcon, KeyboardIcon, MicIcon } from "@workspace/ui-react/icons";
 
 import { PlusOneForm } from "#/features/inauguration/invitation/components/plus-one-form";
 import type { useSignupConversation } from "#/features/inauguration/invitation/hooks/use-signup-conversation";
+import {
+	LiveLeifAvatar,
+	LiveLeifSubtitles,
+} from "#/features/inauguration/leif/components/live-leif";
 import { LEIF_PORTRAIT_SRC } from "#/features/inauguration/leif/constants";
 
-/** Answers that move the invitation forward get the coral treatment. */
 /** Beyond this length the reply gets a smaller type and Leif steps back. */
 const LONG_LINE_CHARACTERS = 140;
 
+/** Answers that move the invitation forward get the coral treatment. */
 const PRIMARY_CHOICES = new Set([
 	"consent_yes",
 	"confirm",
@@ -53,6 +55,22 @@ export function LeifConversation(props: LeifConversationProps) {
 		stage.current?.scrollTo({ top: stage.current.scrollHeight, behavior: "smooth" });
 	}, [lineId]);
 
+	// Each answer replaces the controls: keep keyboard and screen-reader users in the dock by
+	// focusing the first new choice (or the text field on devices with a physical keyboard).
+	const dock = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (!turn || !dock.current) return;
+		const active = document.activeElement;
+		const lost = !active || active === document.body || !active.isConnected;
+		if (!lost && !dock.current.contains(active)) return;
+
+		const chip = dock.current.querySelector<HTMLElement>("fieldset button");
+		const field = window.matchMedia("(pointer: fine)").matches
+			? dock.current.querySelector<HTMLElement>("input")
+			: null;
+		(chip ?? field)?.focus({ preventScroll: true });
+	}, [turn]);
+
 	return (
 		<div className="flex min-h-0 flex-1 flex-col items-center">
 			<div
@@ -60,10 +78,10 @@ export function LeifConversation(props: LeifConversationProps) {
 				className="-mx-5 min-h-0 w-[calc(100%+2.5rem)] flex-1 overflow-y-auto px-5 [mask-image:linear-gradient(to_bottom,transparent,black_1.5rem,black_calc(100%-2rem),transparent)] [scrollbar-width:none]"
 			>
 				<div className="flex min-h-full flex-col items-center justify-center gap-6 py-6 sm:gap-8">
-					<LeifAvatar
+					<LiveLeifAvatar
 						name={avatarName}
 						state={state}
-						mouthOpenness={voice.mouthOpenness}
+						frame={voice.frame}
 						framing="portrait"
 						size="fill"
 						imageSrc={LEIF_PORTRAIT_SRC}
@@ -83,11 +101,12 @@ export function LeifConversation(props: LeifConversationProps) {
 							</p>
 						)}
 						{voice.line ? (
-							<LeifSubtitles
+							<LiveLeifSubtitles
+								announce={false}
 								key={voice.line.id}
 								text={voice.line.text}
 								alignment={voice.line.words}
-								currentTimeMs={voice.currentTimeMs}
+								frame={voice.frame}
 								speaker={avatarName}
 								size="md"
 								className={cn(
@@ -106,7 +125,15 @@ export function LeifConversation(props: LeifConversationProps) {
 				</div>
 			</div>
 
-			<div className="grid w-full max-w-2xl shrink-0 gap-4 pt-2 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:gap-5">
+			{/* One persistent live region: remounting ones are not announced reliably. */}
+			<p aria-live="polite" className="sr-only">
+				{voice.line?.text}
+			</p>
+
+			<div
+				ref={dock}
+				className="grid w-full max-w-2xl shrink-0 gap-4 pt-2 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:gap-5"
+			>
 				{turn?.form === "plus_one" && (
 					<div className="rounded-3xl border border-neutral-5 bg-neutral-2/85 p-5 backdrop-blur-md">
 						<PlusOneForm
@@ -133,7 +160,7 @@ export function LeifConversation(props: LeifConversationProps) {
 							label: choice.label,
 							tone: PRIMARY_CHOICES.has(choice.value) ? "primary" : "default",
 						}))}
-						disabled={busy}
+						busy={busy}
 						className="max-sm:-mx-5 max-sm:flex-nowrap max-sm:justify-start max-sm:overflow-x-auto max-sm:px-5 max-sm:pb-1 max-sm:[scrollbar-width:none] [&>button]:shrink-0"
 						onChoose={(value) =>
 							send({ choice: value }, choices.find((choice) => choice.value === value)?.label)
@@ -232,11 +259,11 @@ function Composer(props: ComposerProps) {
 				/>
 				<button
 					type="submit"
-					disabled={disabled || !value.trim()}
+					aria-disabled={disabled || !value.trim() || undefined}
 					aria-label={sendLabel}
 					className={cn(
 						"absolute top-1.5 right-1.5 grid size-9 place-items-center rounded-full bg-primary-9 text-white outline-none transition focus-visible:ring-3 focus-visible:ring-primary-7 [&_svg]:size-4",
-						"disabled:bg-neutral-5 disabled:text-neutral-9",
+						"aria-disabled:bg-neutral-5 aria-disabled:text-neutral-9",
 					)}
 				>
 					<ArrowUpIcon aria-hidden="true" />

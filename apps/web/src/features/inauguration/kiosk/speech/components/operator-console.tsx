@@ -6,6 +6,10 @@ import { cn } from "tailwind-variants";
 import { DrakkarLogo } from "@workspace/ui-react/components/drakkar-logo";
 import { ExternalLinkIcon, PlayIcon, RotateCcwIcon } from "@workspace/ui-react/icons";
 
+import {
+	type CueSpeechStatus,
+	useCueSpeeches,
+} from "#/features/inauguration/kiosk/speech/hooks/use-cue-speeches";
 import { KIOSK_AVATAR_NAME } from "#/features/inauguration/leif/constants";
 import type { SpeechCurrent } from "#/features/inauguration/leif/types";
 import { inauguration } from "#/libs/tuyau";
@@ -25,6 +29,8 @@ export function OperatorConsole() {
 	const { data: cues = [] } = useQuery(
 		inauguration.kiosk.speech.cues.queryOptions({}, { staleTime: Number.POSITIVE_INFINITY }),
 	);
+	// Also warms the server speech cache before the speech screen needs it.
+	const { statuses } = useCueSpeeches(cues);
 	const { data: current, isError: offline } = useQuery(
 		inauguration.kiosk.speech.current.queryOptions(
 			{},
@@ -123,8 +129,9 @@ export function OperatorConsole() {
 								{index + 1}
 							</span>
 							<div className="grid min-w-0 gap-1.5">
-								<p className="flex items-center gap-3 font-bold text-lg text-neutral-12">
+								<p className="flex flex-wrap items-center gap-3 font-bold text-lg text-neutral-12">
 									{cue.label}
+									<AudioBadge status={statuses[cue.id] ?? "loading"} />
 									{active && (
 										<span className="rounded-full bg-primary-9 px-2.5 py-0.5 font-bold text-[0.65rem] text-white uppercase tracking-[0.16em]">
 											{t("live")}
@@ -196,6 +203,36 @@ function LiveStatus(props: { current: SpeechCurrent | undefined; offline: boolea
 				)}
 			</p>
 		</div>
+	);
+}
+
+function AudioBadge(props: { status: CueSpeechStatus }) {
+	const { status } = props;
+
+	const { t } = useTranslation("features.inauguration.kiosk.speech.components.operator-console");
+
+	return (
+		<span
+			className={cn(
+				"inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-semibold text-[0.7rem]",
+				status === "audio" && "border-success-7 text-success-11",
+				status === "text" && "border-neutral-6 text-neutral-10",
+				status === "loading" && "border-neutral-6 text-neutral-10",
+				status === "error" && "border-warning-7 text-warning-11",
+			)}
+		>
+			<span
+				aria-hidden="true"
+				className={cn(
+					"size-1.5 rounded-full",
+					status === "audio" && "bg-success-9",
+					status === "text" && "bg-neutral-8",
+					status === "loading" && "animate-pulse bg-neutral-9 motion-reduce:animate-none",
+					status === "error" && "bg-warning-9",
+				)}
+			/>
+			{t(`audio.${status}`)}
+		</span>
 	);
 }
 

@@ -71,21 +71,37 @@ export type LeifSubtitlesRootProps = VariantProps<typeof leifSubtitlesVariants> 
 	alignment?: LeifSubtitleWord[];
 	/** Playback position of the audio clip, in milliseconds. */
 	currentTimeMs?: number;
+	/**
+	 * Announce the line in a polite live region. Turn off when the page owns a persistent live
+	 * region (a remounting one is not announced reliably). @default true
+	 */
+	announce?: boolean;
 	/** Small uppercase kicker above the line, e.g. the avatar name. */
 	speaker?: string;
 	className?: string;
 };
 
 export function LeifSubtitlesRoot(props: LeifSubtitlesRootProps) {
-	const { text, alignment, currentTimeMs, speaker, size, align, className } = props;
+	const {
+		text,
+		alignment,
+		currentTimeMs,
+		announce = true,
+		speaker,
+		size,
+		align,
+		className,
+	} = props;
 	const styles = leifSubtitlesVariants({ size, align });
 
 	return (
 		<div className={styles.root({ className })}>
 			{speaker && <span className={styles.speaker()}>{speaker}</span>}
-			<p aria-live="polite" className={styles.srOnly()}>
-				{text}
-			</p>
+			{announce && (
+				<p aria-live="polite" className={styles.srOnly()}>
+					{text}
+				</p>
+			)}
 			<p aria-hidden="true" className={styles.line()}>
 				{alignment && alignment.length > 0 && currentTimeMs !== undefined
 					? alignment.map((word) => {

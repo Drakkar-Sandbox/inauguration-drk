@@ -8,12 +8,12 @@ Guest-facing surfaces of the inauguration: public invitation with Leif (`/i/$tok
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Voice playback, lip-sync, subtitles | `leif/hooks/use-leif-voice.ts` | Web Audio + AnalyserNode; without audio (no TTS key, muted, autoplay locked) lines are revealed at reading pace. |
+| Voice playback, lip-sync, subtitles | `leif/hooks/use-leif-voice.ts` | Web Audio + AnalyserNode; without audio (no TTS key, muted, autoplay locked) lines are revealed at reading pace. Per-frame values (mouth, playback time) live in a frame store (`leif/utils/frame-store.ts`) read only by `leif/components/live-leif.tsx` and `StageBackdrop`. |
 | Push-to-talk | `leif/hooks/use-push-to-talk.ts` | MediaRecorder (webm/opus, mp4 on Safari), 30 s max; settles on `disabled` when the mic or STT is unavailable. |
 | Avatar state machine | `leif/hooks/use-leif-state.ts` | speaking > listening > thinking (optional delay) > idle. |
 | TTS/STT calls, file URLs | `leif/utils/api.ts` | Guests pass their invitation token; kiosks rely on the session cookie. |
 | Signup conversation | `invitation/hooks/use-signup-conversation.ts` | Server state machine is the source of truth; the turn's `invitation` refreshes the cache. |
-| Reception / borne / speech | `kiosk/{reception,challenge,speech}/**` | Scanner input: `kiosk/hooks/use-scanner-input.ts` (USB keyboard wedge) + `kiosk/components/camera-scanner.tsx`. |
+| Reception / borne / speech | `kiosk/{reception,challenge,speech}/**` | Scanner input: `kiosk/hooks/use-scanner-input.ts` (USB keyboard wedge, token extracted by `kiosk/utils/scan.ts`) + `kiosk/components/camera-scanner.tsx`. Speech cues are synthesized and decoded ahead of time (`use-cue-speeches.ts`). |
 
 ## CONVENTIONS
 
@@ -22,6 +22,9 @@ Guest-facing surfaces of the inauguration: public invitation with Leif (`/i/$tok
 - Avatar name: the public page uses `invitation.event.avatarName`; kiosk endpoints do not expose it, so screens use `KIOSK_AVATAR_NAME` (`VITE_AVATAR_NAME`, default "Leif").
 - Locally written Leif lines (apologies, returning guest) are voiced on kiosks (staff TTS accepts any text) but shown text-only to guests (public TTS only voices lines the server said).
 - Per-request Tuyau `headers` replace the superjson plugin's: keep `x-superjson: true` when passing headers.
+- Public signup: display `reply.text`, voice exactly `reply.spoken` (empty → no TTS call); anything else is refused by the API.
+- Kiosk accounts (role `kiosk`) are redirected from the back-office shell to `/screens` (screen picker).
+- **USB QR scanners must be configured for the French (AZERTY) keyboard layout.** Otherwise a/q, z/w and m swap and the token is garbled; the parser only survives punctuation changes (`:` `/`), never letter swaps.
 
 ## ANTI-PATTERNS
 

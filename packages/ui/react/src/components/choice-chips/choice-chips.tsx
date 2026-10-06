@@ -17,6 +17,7 @@ const choiceChipsVariants = tv({
 			"inline-flex animate-rise cursor-pointer select-none items-center justify-center rounded-full border font-semibold outline-none transition motion-reduce:animate-none",
 			"focus-visible:ring-3 focus-visible:ring-primary-7 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-1",
 			"disabled:cursor-not-allowed disabled:opacity-40",
+			"aria-disabled:cursor-wait aria-disabled:opacity-40",
 		],
 	},
 	variants: {
@@ -54,25 +55,47 @@ const choiceChipsVariants = tv({
 export type ChoiceChipsRootProps = Omit<VariantProps<typeof choiceChipsVariants>, "tone"> & {
 	choices: ChoiceChip[];
 	onChoose?: (value: string) => void;
-	/** Disables every chip, e.g. while Leif is answering. */
+	/** Disables every chip. */
 	disabled?: boolean;
+	/**
+	 * Temporarily inert (e.g. while Leif is answering): chips stay focusable (`aria-disabled`) so
+	 * keyboard and screen-reader users keep their place, but choosing does nothing.
+	 */
+	busy?: boolean;
 	/** Accessible name of the group. */
 	"aria-label"?: string;
 	className?: string;
 };
 
 export function ChoiceChipsRoot(props: ChoiceChipsRootProps) {
-	const { choices, onChoose, disabled, size, align, "aria-label": ariaLabel, className } = props;
+	const {
+		choices,
+		onChoose,
+		disabled,
+		busy,
+		size,
+		align,
+		"aria-label": ariaLabel,
+		className,
+	} = props;
 	const styles = choiceChipsVariants({ size, align });
 
 	return (
-		<fieldset aria-label={ariaLabel} disabled={disabled} className={styles.root({ className })}>
+		<fieldset
+			aria-label={ariaLabel}
+			aria-busy={busy || undefined}
+			disabled={disabled}
+			className={styles.root({ className })}
+		>
 			{choices.map((choice, index) => (
 				<button
 					key={choice.value}
 					type="button"
 					disabled={choice.disabled}
-					onClick={() => onChoose?.(choice.value)}
+					aria-disabled={busy || undefined}
+					onClick={() => {
+						if (!busy) onChoose?.(choice.value);
+					}}
 					className={choiceChipsVariants({ size, tone: choice.tone }).chip()}
 					style={{ animationDelay: `${index * 60}ms` }}
 				>

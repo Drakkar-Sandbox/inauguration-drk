@@ -13,6 +13,7 @@ import {
 	synthesizeSpeech,
 	transcribeSpeech,
 } from "#/features/inauguration/leif/utils/api";
+import { unlockAudio } from "#/features/inauguration/leif/utils/audio";
 import { inauguration } from "#/libs/tuyau";
 
 export type SignupInput = {
@@ -47,11 +48,13 @@ export function useSignupConversation(params: UseSignupConversationParams) {
 	});
 
 	const { mutateAsync: sendMessage, isPending } = useMutation(
-		inauguration.invitations.leif.message.mutationOptions(),
+		inauguration.invitations.leif.message.mutationOptions({ tuyau: { timeout: 25_000 } }),
 	);
 
 	const send = useCallback(
 		async (input: SignupInput, said?: string) => {
+			// Still inside the tap: iOS only unlocks audio synchronously within a user gesture.
+			if (!muted) void unlockAudio();
 			voice.stop();
 			setGuestLine(said ?? null);
 
@@ -74,7 +77,7 @@ export function useSignupConversation(params: UseSignupConversationParams) {
 				await voice.speak(apology, { speech: null });
 			}
 		},
-		[sendMessage, setInvitation, t, token, voice.speak, voice.stop],
+		[muted, sendMessage, setInvitation, t, token, voice.speak, voice.stop],
 	);
 
 	const ptt = usePushToTalk({
@@ -101,6 +104,7 @@ export function useSignupConversation(params: UseSignupConversationParams) {
 		ptt: {
 			...ptt,
 			start: () => {
+				if (!muted) void unlockAudio();
 				voice.stop();
 				return ptt.start();
 			},

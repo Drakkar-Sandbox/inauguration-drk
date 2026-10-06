@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { extractInvitationToken } from "#/features/inauguration/kiosk/utils/scan";
 import { useLeifState } from "#/features/inauguration/leif/hooks/use-leif-state";
 import { useLeifVoice } from "#/features/inauguration/leif/hooks/use-leif-voice";
 import type { KioskGuest } from "#/features/inauguration/leif/types";
@@ -13,6 +14,8 @@ const MIN_WELCOME_MS = 15_000;
 const AFTER_SPEECH_MS = 3_500;
 /** A new scan can interrupt a welcome only after this delay (double scans, shaky hands). */
 const SCAN_LOCK_MS = 2_500;
+const REQUEST_TIMEOUT_MS = 25_000;
+const STAFF_SYNTHESIS_TIMEOUT_MS = 20_000;
 
 export type ReceptionVisit = {
 	id: number;
@@ -34,13 +37,23 @@ export function useReception() {
 	const startedAt = useRef(0);
 	const backToIdle = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const visitId = useRef(0);
+	/** What the current welcome was started from: scanning the same badge again is ignored. */
+	const activeRef = useRef<string | null>(null);
 
-	const voice = useLeifVoice({ synthesize: (text) => synthesizeSpeech(text) });
-	const { mutateAsync: checkin } = useMutation(inauguration.kiosk.checkin.mutationOptions());
-	const { mutateAsync: greet } = useMutation(inauguration.kiosk.leif.greeting.mutationOptions());
+	const voice = useLeifVoice({
+		synthesize: (text) => synthesizeSpeech(text, undefined, STAFF_SYNTHESIS_TIMEOUT_MS),
+		synthesisTimeoutMs: STAFF_SYNTHESIS_TIMEOUT_MS,
+	});
+	const { mutateAsync: checkin } = useMutation(
+		inauguration.kiosk.checkin.mutationOptions({ tuyau: { timeout: REQUEST_TIMEOUT_MS } }),
+	);
+	const { mutateAsync: greet } = useMutation(
+		inauguration.kiosk.leif.greeting.mutationOptions({ tuyau: { timeout: REQUEST_TIMEOUT_MS } }),
+	);
 
 	const reset = useCallback(() => {
 		clearTimeout(backToIdle.current);
+		activeRef.current = null;
 		voice.clear();
 		setVisit(null);
 		setWaiting(false);
@@ -51,6 +64,11 @@ export function useReception() {
 		async (ref: { token: string } | { guestId: number }) => {
 			const now = performance.now();
 			if (visitId.current > 0 && visit && now - startedAt.current < SCAN_LOCK_MS) return;
+
+			const token = "token" in ref ? (extractInvitationToken(ref.token) ?? ref.token) : null;
+			const key = token ? `token:${token}` : `guest:${"guestId" in ref ? ref.guestId : ""}`;
+			if (visit && activeRef.current === key) return;
+			activeRef.current = key;
 
 			clearTimeout(backToIdle.current);
 			voice.clear();
@@ -64,7 +82,9 @@ export function useReception() {
 				text: t("generic"),
 			};
 			try {
-				const { guest, alreadyCheckedIn } = await checkin({ body: ref });
+				const { guest, alreadyCheckedIn } = await checkin({
+					body: token ? { token } : ref,
+				});
 				if (!isCurrent()) return;
 				setVisit({ id, guest, returning: alreadyCheckedIn, settled: true });
 
@@ -72,7 +92,9 @@ export function useReception() {
 					line = { text: t("returning", { name: guest.firstName }) };
 				} else {
 					try {
-						const greeting = await greet({ body: { guestId: guest.id } });
+						const greeting = await greet({
+							body: { guestId: guest.id },
+						});
 						line = { text: greeting.reply.text, speech: greeting.audio };
 					} catch {
 						line = { text: t("fallback", { name: guest.firstName }) };

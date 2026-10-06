@@ -19,6 +19,22 @@ export function getAudioContext() {
 	return sharedContext;
 }
 
+type AudioSessionType = "playback" | "play-and-record";
+
+/**
+ * iOS 17+ routes Web Audio through the ringer unless the page declares its audio session:
+ * `playback` keeps Leif audible in silent mode, `play-and-record` while the microphone is open.
+ */
+export function setAudioSessionType(type: AudioSessionType) {
+	const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+	if (!session) return;
+	try {
+		session.type = type;
+	} catch {
+		// Unsupported value on this platform.
+	}
+}
+
 export function isAudioUnlocked() {
 	return getAudioContext()?.state === "running";
 }
@@ -30,6 +46,7 @@ export function isAudioUnlocked() {
 export async function unlockAudio() {
 	const context = getAudioContext();
 	if (!context) return false;
+	setAudioSessionType("playback");
 
 	try {
 		const silence = context.createBuffer(1, 1, 22_050);
@@ -43,6 +60,21 @@ export async function unlockAudio() {
 	}
 
 	return context.state === "running";
+}
+
+const decoded = new WeakMap<object, Promise<AudioBuffer>>();
+
+/**
+ * Decodes a synthesized line once; later plays (speech screen cues) start from memory.
+ */
+export function decodeSpeechAudio(context: AudioContext, speech: { audioBase64: string }) {
+	let buffer = decoded.get(speech);
+	if (!buffer) {
+		buffer = context.decodeAudioData(decodeBase64(speech.audioBase64));
+		buffer.catch(() => decoded.delete(speech));
+		decoded.set(speech, buffer);
+	}
+	return buffer;
 }
 
 export function decodeBase64(base64: string) {

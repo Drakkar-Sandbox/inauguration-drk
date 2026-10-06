@@ -1,9 +1,11 @@
 import { DrakkarLogo } from "@workspace/ui-react/components/drakkar-logo";
-import { LeifAvatar } from "@workspace/ui-react/components/leif-avatar";
-import { LeifSubtitles } from "@workspace/ui-react/components/leif-subtitles";
 
 import { AudioUnlockGate } from "#/features/inauguration/kiosk/components/audio-unlock-gate";
 import { useSpeechCue } from "#/features/inauguration/kiosk/speech/hooks/use-speech-cue";
+import {
+	LiveLeifAvatar,
+	LiveLeifSubtitles,
+} from "#/features/inauguration/leif/components/live-leif";
 import { StageBackdrop } from "#/features/inauguration/leif/components/stage-backdrop";
 import { KIOSK_AVATAR_NAME, LEIF_FULLBODY_SRC } from "#/features/inauguration/leif/constants";
 
@@ -16,15 +18,15 @@ export function SpeechScreen() {
 
 	return (
 		<div className="relative size-full overflow-hidden">
-			<StageBackdrop spotlight="center" intensity={voice.mouthOpenness} />
+			<StageBackdrop spotlight="center" frame={voice.frame} />
 			<AudioUnlockGate />
 
 			<div className="absolute inset-x-0 top-[4vh] bottom-0 flex justify-center">
 				<div className="aspect-9/16 h-full max-w-full">
-					<LeifAvatar
+					<LiveLeifAvatar
 						name={KIOSK_AVATAR_NAME}
 						state={state}
-						mouthOpenness={voice.mouthOpenness}
+						frame={voice.frame}
 						framing="fullbody"
 						size="fill"
 						imageSrc={LEIF_FULLBODY_SRC}
@@ -34,11 +36,11 @@ export function SpeechScreen() {
 
 			<div className="absolute inset-x-0 bottom-0 flex min-h-[34vh] items-end justify-center bg-linear-to-t from-neutral-1 via-neutral-1/85 to-transparent px-[8vw] pb-[7vh]">
 				{voice.line && (
-					<LeifSubtitles
+					<LiveLeifSubtitles
 						key={voice.line.id}
 						text={voice.line.text}
 						alignment={voice.line.words}
-						currentTimeMs={voice.currentTimeMs}
+						frame={voice.frame}
 						size="xl"
 						className="max-w-[80vw] animate-rise motion-reduce:animate-none [&>p]:text-[4.6vmin] [&>p]:leading-[1.15]"
 					/>

@@ -2,10 +2,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PushToTalkState } from "@workspace/ui-react/components/push-to-talk-button";
 
-import { analyserLevel, getAudioContext } from "#/features/inauguration/leif/utils/audio";
+import {
+	analyserLevel,
+	getAudioContext,
+	setAudioSessionType,
+} from "#/features/inauguration/leif/utils/audio";
 
 const MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
 const MIN_RECORDING_MS = 400;
+const TRANSIENT_RETRY_MS = 600;
+/** After a non-permission microphone failure, the button comes back after this delay. */
+const TRANSIENT_RECOVERY_MS = 8_000;
 
 type UsePushToTalkParams = {
 	/** Sends the recording to speech-to-text. Resolve `null` when no transcription is available. */
@@ -42,6 +49,9 @@ export function usePushToTalk(params: UsePushToTalkParams) {
 	const startedAt = useRef(0);
 	const pressed = useRef(false);
 	const discard = useRef(false);
+	const acquiring = useRef(false);
+	const disposed = useRef(false);
+	const recoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	const releaseStream = useCallback(() => {
 		for (const track of stream.current?.getTracks() ?? []) track.stop();
@@ -111,45 +121,124 @@ export function usePushToTalk(params: UsePushToTalkParams) {
 		[keepStreamAlive, releaseStream, stopMeter],
 	);
 
-	const start = useCallback(async () => {
-		if (recorder.current || state === "disabled" || state === "processing") return;
-		pressed.current = true;
-		discard.current = false;
+	/** Live, usable stream: reused between turns on kiosks unless the device went away. */
+	const liveStream = useCallback(() => {
+		const current = stream.current;
+		if (current?.active && current.getAudioTracks().every((track) => track.readyState === "live")) {
+			return current;
+		}
+		releaseStream();
+		return null;
+	}, [releaseStream]);
 
-		try {
-			stream.current ??= await navigator.mediaDevices.getUserMedia({
+	const acquireStream = useCallback(async () => {
+		const existing = liveStream();
+		if (existing) return existing;
+
+		const request = () =>
+			navigator.mediaDevices.getUserMedia({
 				audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
 			});
-		} catch {
-			pressed.current = false;
-			setState("disabled");
+		let acquired: MediaStream;
+		try {
+			acquired = await request();
+		} catch (error) {
+			if (isPermissionError(error)) throw error;
+			// Transient (device busy, unplugged, waking up): one more try before giving up.
+			await new Promise((resolve) => setTimeout(resolve, TRANSIENT_RETRY_MS));
+			acquired = await request();
+		}
+
+		if (disposed.current) {
+			for (const track of acquired.getTracks()) track.stop();
+			throw new Error("unmounted");
+		}
+		for (const track of acquired.getAudioTracks()) {
+			track.addEventListener("ended", () => {
+				if (stream.current === acquired) stream.current = null;
+			});
+		}
+		stream.current = acquired;
+		return acquired;
+	}, [liveStream]);
+
+	const start = useCallback(async () => {
+		// A second press while the microphone is still opening is ignored.
+		if (recorder.current || acquiring.current || state === "disabled" || state === "processing") {
 			return;
 		}
+		pressed.current = true;
+		discard.current = false;
+		setAudioSessionType("play-and-record");
+
+		let mediaStream: MediaStream;
+		acquiring.current = true;
+		try {
+			mediaStream = await acquireStream();
+		} catch (error) {
+			pressed.current = false;
+			setAudioSessionType("playback");
+			if (disposed.current) return;
+			if (isPermissionError(error)) {
+				setState("disabled");
+				return;
+			}
+			// Not a refusal: offer the microphone again a little later.
+			setState("disabled");
+			clearTimeout(recoverTimer.current);
+			recoverTimer.current = setTimeout(() => setState("idle"), TRANSIENT_RECOVERY_MS);
+			return;
+		} finally {
+			acquiring.current = false;
+		}
 		// Released before the microphone was ready: nothing to record.
-		if (!pressed.current) {
+		if (!pressed.current || disposed.current) {
 			if (!keepStreamAlive) releaseStream();
+			setAudioSessionType("playback");
 			return;
 		}
 
 		const mimeType = MIME_TYPES.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
-		const mediaRecorder = new MediaRecorder(stream.current, mimeType ? { mimeType } : undefined);
 		const chunks: Blob[] = [];
-		mediaRecorder.ondataavailable = (event) => {
-			if (event.data.size > 0) chunks.push(event.data);
-		};
-		mediaRecorder.onstop = () => {
+		let mediaRecorder: MediaRecorder;
+		try {
+			mediaRecorder = new MediaRecorder(mediaStream, mimeType ? { mimeType } : undefined);
+			mediaRecorder.ondataavailable = (event) => {
+				if (event.data.size > 0) chunks.push(event.data);
+			};
+			mediaRecorder.onstop = () => {
+				recorder.current = null;
+				clearTimeout(maxTimer.current);
+				setAudioSessionType("playback");
+				void finishRecording(chunks, mediaRecorder.mimeType || mimeType);
+			};
+			recorder.current = mediaRecorder;
+			startedAt.current = performance.now();
+			mediaRecorder.start();
+		} catch {
+			// Stale stream or recorder refusal: reset so the next press starts clean.
 			recorder.current = null;
-			clearTimeout(maxTimer.current);
-			void finishRecording(chunks, mediaRecorder.mimeType || mimeType);
-		};
+			pressed.current = false;
+			releaseStream();
+			stopMeter();
+			setAudioSessionType("playback");
+			setState("idle");
+			return;
+		}
 
-		recorder.current = mediaRecorder;
-		startedAt.current = performance.now();
-		mediaRecorder.start();
-		startMeter(stream.current);
+		startMeter(mediaStream);
 		setState("recording");
 		maxTimer.current = setTimeout(() => recorder.current?.stop(), maxDurationMs);
-	}, [state, keepStreamAlive, maxDurationMs, finishRecording, releaseStream, startMeter]);
+	}, [
+		state,
+		keepStreamAlive,
+		maxDurationMs,
+		acquireStream,
+		finishRecording,
+		releaseStream,
+		startMeter,
+		stopMeter,
+	]);
 
 	/** Stops and sends the recording. */
 	const stop = useCallback(() => {
@@ -164,16 +253,18 @@ export function usePushToTalk(params: UsePushToTalkParams) {
 		if (recorder.current?.state === "recording") recorder.current.stop();
 	}, []);
 
-	useEffect(
-		() => () => {
+	useEffect(() => {
+		disposed.current = false;
+		return () => {
+			disposed.current = true;
 			discard.current = true;
 			clearTimeout(maxTimer.current);
+			clearTimeout(recoverTimer.current);
 			if (recorder.current?.state === "recording") recorder.current.stop();
 			stopMeter();
 			releaseStream();
-		},
-		[releaseStream, stopMeter],
-	);
+		};
+	}, [releaseStream, stopMeter]);
 
 	return { state, level, start, stop, cancel, available: state !== "disabled" };
 }
@@ -183,5 +274,13 @@ function isRecordingSupported() {
 		typeof window !== "undefined" &&
 		typeof MediaRecorder !== "undefined" &&
 		Boolean(navigator.mediaDevices?.getUserMedia)
+	);
+}
+
+/** Only an explicit refusal is permanent; anything else may work on the next press. */
+function isPermissionError(error: unknown) {
+	return (
+		error instanceof DOMException &&
+		(error.name === "NotAllowedError" || error.name === "SecurityError")
 	);
 }
