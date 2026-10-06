@@ -1,0 +1,27 @@
+{
+	"features.inauguration.backoffice.handoffs.components.handoff-actions": {
+		"seen": "Vu",
+		"done": "Traité",
+		"reopen": "Rouvrir"
+	},
+
+	"features.inauguration.backoffice.handoffs.components.notifications-toggle": {
+		"enable": "Activer les notifications",
+		"granted": "Notifications du navigateur activées",
+		"denied": "Notifications bloquées par le navigateur"
+	},
+
+	"features.inauguration.backoffice.handoffs.components.handoffs-table": {
+		"columns": {
+			"status": "Statut",
+			"guest": "Invité",
+			"reason": "Demande",
+			"referent": "Référent",
+			"created-at": "Reçue le"
+		},
+		"conversation": "Voir la conversation",
+		"unknown-guest": "Invité inconnu",
+		"no-referent": "Non assigné",
+		"empty": "Aucune passation pour le moment."
+	}
+}

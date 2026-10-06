@@ -1,0 +1,27 @@
+{
+	"features.inauguration.backoffice.guests.hooks.mutations": {
+		"create": {
+			"success": "{{name}} a été ajouté à la liste des invités."
+		},
+		"update": {
+			"success": "Fiche invité enregistrée."
+		},
+		"delete": {
+			"success": "Invité supprimé."
+		},
+		"import": {
+			"success": "Import terminé : {{created}} créé(s), {{updated}} mis à jour.",
+			"with-errors_one": "{{count}} ligne ignorée, voir le détail.",
+			"with-errors_other": "{{count}} lignes ignorées, voir le détail."
+		}
+	},
+
+	"features.inauguration.backoffice.guests.hooks.forms": {
+		"validation": {
+			"first-name": "Le prénom est requis.",
+			"last-name": "Le nom est requis.",
+			"email": "L'adresse e-mail n'est pas valide.",
+			"max": "{{max}} caractères maximum."
+		}
+	}
+}

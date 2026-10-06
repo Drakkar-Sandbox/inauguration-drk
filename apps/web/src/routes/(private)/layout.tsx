@@ -19,7 +19,7 @@ export const Route = createFileRoute("/(private)")({
 
 function Layout() {
 	return (
-		<div className="ml-72 p-4 pt-8">
+		<div className="ml-72 p-4 pt-8 print:m-0 print:p-0">
 			<Sidebar />
 			<Outlet />
 		</div>

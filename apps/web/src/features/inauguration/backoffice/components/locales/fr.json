@@ -1,0 +1,48 @@
+{
+	"features.inauguration.backoffice.labels": {
+		"checked-in": "Présent",
+		"guest-status": {
+			"invited": "Invité",
+			"confirmed": "Confirmé",
+			"declined": "Décliné"
+		},
+		"guest-kind": {
+			"primary": "Invité principal",
+			"plus_one": "+1"
+		},
+		"meeting-status": {
+			"none": "Aucun",
+			"to_propose": "À proposer",
+			"proposed": "Proposé",
+			"held": "Tenu",
+			"mission": "Mission"
+		},
+		"handoff-status": {
+			"pending": "À traiter",
+			"seen": "Vu",
+			"done": "Traité"
+		},
+		"channel": {
+			"signup": "Inscription",
+			"kiosk": "Borne"
+		},
+		"interest": {
+			"low": "Intérêt faible",
+			"medium": "Intérêt moyen",
+			"high": "Intérêt fort"
+		},
+		"consent": {
+			"given": "Consentement donné",
+			"refused": "Consentement refusé",
+			"unknown": "Consentement inconnu"
+		},
+		"all": "Tous",
+		"none": "—"
+	},
+	"features.inauguration.backoffice.components.pagination": {
+		"summary_one": "{{count}} résultat · page {{page}} / {{last}}",
+		"summary_other": "{{count}} résultats · page {{page}} / {{last}}",
+		"previous": "Page précédente",
+		"next": "Page suivante"
+	}
+}

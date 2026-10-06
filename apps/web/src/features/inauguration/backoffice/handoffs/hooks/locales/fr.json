@@ -1,0 +1,9 @@
+{
+	"features.inauguration.backoffice.handoffs.hooks.watcher": {
+		"title": "Nouvelle passation : {{name}}",
+		"unknown-guest": "invité inconnu",
+		"action": {
+			"open": "Voir"
+		}
+	}
+}

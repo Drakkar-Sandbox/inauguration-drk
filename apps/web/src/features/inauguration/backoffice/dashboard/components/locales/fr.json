@@ -1,0 +1,31 @@
+{
+	"features.inauguration.backoffice.dashboard.components.kpi-grid": {
+		"sections": {
+			"invitations": "Invitations",
+			"event": "Jour J",
+			"follow-up": "Suivi",
+			"meetings": "Rendez-vous"
+		},
+		"kpi": {
+			"invited": "Invités",
+			"confirmed": "Confirmés",
+			"declined": "Déclinés",
+			"pending": "Sans réponse",
+			"plus-ones": "+1",
+			"checked-in": "Présents",
+			"kiosk": "Passages borne",
+			"signup": "Échanges à l'inscription",
+			"handoffs-pending": "Passations à traiter",
+			"handoffs-seen": "Passations vues",
+			"handoffs-done": "Passations traitées",
+			"consent": "Consentements"
+		},
+		"hint": {
+			"rate": "{{rate}} %",
+			"of-expected": "sur {{expected}} attendus ({{rate}} %)",
+			"kiosk-guests_one": "{{count}} invité distinct",
+			"kiosk-guests_other": "{{count}} invités distincts"
+		},
+		"updated-at": "Mis à jour à {{time}} · actualisation automatique toutes les 10 s"
+	}
+}

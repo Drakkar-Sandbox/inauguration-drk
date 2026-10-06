@@ -1,0 +1,26 @@
+{
+	"features.inauguration.backoffice.utils.api": {
+		"error": {
+			"E_NETWORK": {
+				"title": "Une erreur réseau est survenue.",
+				"description": "Veuillez vérifier votre connexion internet et réessayer."
+			},
+			"E_VALIDATION": {
+				"title": "Données invalides.",
+				"description": "Veuillez vérifier les informations saisies et réessayer."
+			},
+			"E_UNAUTHENTICATED": {
+				"title": "Vous n'êtes pas connecté.",
+				"description": "Veuillez vous connecter pour continuer."
+			},
+			"E_ROW_NOT_FOUND": {
+				"title": "Élément introuvable.",
+				"description": "Il a peut-être été supprimé entre-temps."
+			},
+			"E_UNEXPECTED": {
+				"title": "Une erreur inattendue est survenue.",
+				"description": "Veuillez réessayer."
+			}
+		}
+	}
+}

@@ -11,10 +11,19 @@
 			"logout": "Se déconnecter"
 		}
 	},
-
 	"components.app.data-table": {
 		"visibility-selector": {
 			"tooltip": "Afficher ou masquer les colonnes"
 		}
+	},
+	"components.app.sidebar.nav": {
+		"section": "Inauguration",
+		"dashboard": "Tableau de bord",
+		"guests": "Invités",
+		"handoffs": "Passations",
+		"conversations": "Conversations",
+		"qr-sheet": "Planche QR",
+		"pending-handoffs_one": "{{count}} passation à traiter",
+		"pending-handoffs_other": "{{count}} passations à traiter"
 	}
 }

@@ -1,0 +1,75 @@
+{
+	"routes.(private).backoffice.dashboard": {
+		"title": "Inauguration",
+		"description": "Vue d'ensemble des invitations, du jour J et du suivi commercial.",
+		"links": {
+			"guests": "Invités",
+			"handoffs": "Passations",
+			"conversations": "Conversations",
+			"qr-sheet": "Planche QR",
+			"export": "Export CSV"
+		}
+	},
+
+	"routes.(private).backoffice.guests": {
+		"title": "Invités",
+		"description": "Liste des invités, statuts d'invitation et fiches angle.",
+		"action": {
+			"qr-sheet": "Planche QR",
+			"export": "Export CSV"
+		}
+	},
+
+	"routes.(private).backoffice.guests.$guestId": {
+		"back": "Tous les invités",
+		"plus-one-of": "+1 de {{name}}",
+		"action": {
+			"delete": "Supprimer"
+		},
+		"handoffs": {
+			"title_one": "Passation ({{count}})",
+			"title_other": "Passations ({{count}})",
+			"empty": "Aucune passation demandée."
+		},
+		"conversations": {
+			"title_one": "Conversation avec Leif ({{count}})",
+			"title_other": "Conversations avec Leif ({{count}})",
+			"empty": "Aucune conversation pour le moment.",
+			"transcript": "Transcription"
+		}
+	},
+
+	"routes.(private).backoffice.qr-sheet": {
+		"back": "Invités",
+		"title": "Planche QR",
+		"description": "Une carte par invité, format A4 avec traits de coupe, pour l'imprimeur.",
+		"filter": "Invités",
+		"print": "Imprimer"
+	},
+
+	"routes.(private).backoffice.handoffs": {
+		"title": "Passations",
+		"description": "Demandes de mise en relation remontées par Leif. Actualisation toutes les 5 s.",
+		"filters": {
+			"status": "Statut",
+			"mine": "Uniquement les miennes"
+		}
+	},
+
+	"routes.(private).backoffice.conversations": {
+		"title": "Conversations",
+		"description": "Échanges des invités avec Leif, à l'inscription et sur la borne.",
+		"filters": {
+			"channel": "Canal"
+		}
+	},
+
+	"routes.(private).backoffice.conversations.$conversationId": {
+		"back": "Toutes les conversations",
+		"anonymous": "Invité non identifié",
+		"guest": "Voir la fiche invité",
+		"transcript": "Transcription",
+		"summary": "Résumé",
+		"handoffs": "Passations"
+	}
+}

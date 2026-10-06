@@ -1,0 +1,30 @@
+{
+	"features.inauguration.backoffice.conversations.components.conversation-summary": {
+		"interest": "Intérêt",
+		"need": "Besoin exprimé",
+		"idea": "Idée / piste",
+		"notes": "Notes",
+		"empty": "Pas encore de résumé pour cette conversation."
+	},
+
+	"features.inauguration.backoffice.conversations.components.conversation-transcript": {
+		"role": {
+			"guest": "Invité",
+			"avatar": "Leif",
+			"system": "Système"
+		},
+		"empty": "Transcription vide."
+	},
+
+	"features.inauguration.backoffice.conversations.components.conversations-table": {
+		"columns": {
+			"started-at": "Date",
+			"guest": "Invité",
+			"channel": "Canal",
+			"need": "Besoin",
+			"interest": "Intérêt"
+		},
+		"anonymous": "Invité non identifié",
+		"empty": "Aucune conversation pour le moment."
+	}
+}

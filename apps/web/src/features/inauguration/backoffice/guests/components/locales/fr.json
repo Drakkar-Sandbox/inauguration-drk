@@ -1,0 +1,115 @@
+{
+	"features.inauguration.backoffice.guests.components.guest-identity-fields": {
+		"first-name": "Prénom",
+		"last-name": "Nom",
+		"email": "E-mail",
+		"company": "Entreprise",
+		"status": "Statut"
+	},
+
+	"features.inauguration.backoffice.guests.components.create-guest-dialog": {
+		"trigger": "Ajouter un invité",
+		"title": "Nouvel invité",
+		"description": "L'invité reçoit un lien d'invitation personnel (QR code) dès sa création.",
+		"action": {
+			"cancel": "Annuler",
+			"submit": "Créer"
+		}
+	},
+
+	"features.inauguration.backoffice.guests.components.guest-identity-form": {
+		"title": "Identité",
+		"description": "Coordonnées et statut de l'invitation.",
+		"action": {
+			"submit": "Enregistrer"
+		}
+	},
+
+	"features.inauguration.backoffice.guests.components.guest-angle-form": {
+		"title": "Fiche angle",
+		"description": "Ce que Drakkar veut aborder avec cet invité, et qui s'en charge.",
+		"fields": {
+			"referent": "Référent Drakkar",
+			"meeting-status": "Suivi RDV",
+			"angle-topic": "Sujet IA / upsell",
+			"angle-topic-description": "Utilisé par Leif pour orienter l'échange.",
+			"angle-notes": "Notes"
+		},
+		"no-referent": "Aucun référent",
+		"action": {
+			"submit": "Enregistrer"
+		}
+	},
+
+	"features.inauguration.backoffice.guests.components.delete-guest-dialog": {
+		"title": "Supprimer {{name}} ?",
+		"description": "L'invité, son +1, ses conversations et passations seront définitivement supprimés. Son QR code ne fonctionnera plus.",
+		"action": {
+			"cancel": "Annuler",
+			"delete": "Supprimer"
+		}
+	},
+
+	"features.inauguration.backoffice.guests.components.guest-qr-card": {
+		"title": "QR code d'invitation",
+		"description": "Ouvre la page d'invitation personnelle de l'invité.",
+		"alt": "QR code de l'invitation",
+		"copy": "Copier le lien d'invitation",
+		"copied": "Lien d'invitation copié."
+	},
+
+	"features.inauguration.backoffice.guests.components.import-guests-dialog": {
+		"trigger": "Importer un CSV",
+		"title": "Importer des invités",
+		"description": "Fichier CSV (UTF-8, 2 Mo max) avec une ligne d'en-tête. Colonnes reconnues :",
+		"hint": "first_name et last_name sont obligatoires. Une ligne dont l'e-mail existe déjà met à jour l'invité correspondant ; referent_email doit correspondre à un compte Drakkar.",
+		"file": "Fichier CSV",
+		"report": {
+			"summary": "{{created}} invité(s) créé(s), {{updated}} mis à jour.",
+			"errors_one": "{{count}} ligne ignorée",
+			"errors_other": "{{count}} lignes ignorées",
+			"line": "Ligne {{line}}"
+		},
+		"action": {
+			"submit": "Importer",
+			"close": "Fermer"
+		}
+	},
+
+	"features.inauguration.backoffice.guests.components.guest-overview-card": {
+		"title": "Statut",
+		"status": "Invitation",
+		"responded-at": "Réponse le",
+		"checked-in-at": "Arrivée",
+		"consent": "Données",
+		"meeting": "Suivi RDV",
+		"kind": "Type",
+		"host": "Invité par",
+		"plus-one": "+1",
+		"no-plus-one": "Aucun"
+	},
+
+	"features.inauguration.backoffice.guests.components.guests-table": {
+		"filters": {
+			"search": "Rechercher un nom, e-mail, entreprise…",
+			"status": "Statut",
+			"kind": "Type",
+			"kind-nested": "Invités + leurs +1",
+			"checked-in": "Présence",
+			"checked-in-yes": "Arrivés",
+			"checked-in-no": "Pas encore arrivés",
+			"referent": "Référent"
+		},
+		"columns": {
+			"name": "Invité",
+			"email": "E-mail",
+			"status": "Statut",
+			"referent": "Référent",
+			"angle": "Angle",
+			"meeting": "RDV",
+			"checked-in": "Arrivée"
+		},
+		"plus-one-of": "+1 de {{name}}",
+		"empty": "Aucun invité ne correspond à ces filtres."
+	}
+}

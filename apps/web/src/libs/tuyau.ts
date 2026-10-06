@@ -12,4 +12,7 @@ export const client = createTuyau({
 	plugins: [superjson()],
 });
 
-export const api = createTuyauReactQueryClient({ client }).web;
+const tuyau = createTuyauReactQueryClient({ client });
+
+export const api = tuyau.web;
+export const inauguration = tuyau.inauguration;
