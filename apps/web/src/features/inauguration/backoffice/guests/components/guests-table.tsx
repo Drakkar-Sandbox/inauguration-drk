@@ -239,7 +239,10 @@ function PlusOneRow(props: { plusOne: NonNullable<GuestListItem["plusOne"]> }) {
 				</Link>
 			</Table.Cell>
 			<Table.Cell className="max-w-56 text-neutral-11">{plusOne.email ?? "—"}</Table.Cell>
-			<Table.Cell colSpan={4} />
+			<Table.Cell>
+				<GuestStatusBadge status={plusOne.status} />
+			</Table.Cell>
+			<Table.Cell colSpan={3} />
 			<Table.Cell className="tabular-nums">
 				{plusOne.checkedInAt ? (
 					<Badge tone="primary">{formatTime(plusOne.checkedInAt)}</Badge>
